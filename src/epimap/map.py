@@ -4,6 +4,7 @@ import pandas as pd
 
 def _float_peptide(start, seq):
     start = int(start)
+    start = start -1
     floating_peptide = "-" * start + seq
     return floating_peptide
 
