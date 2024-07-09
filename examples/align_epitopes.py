@@ -6,7 +6,7 @@ from epimap import map
 sequence = "abcdefghi"
 epitopes = pd.DataFrame(
     {
-        'start': [1,2,3,4,6],
+        'start': [1.0,2,3,4,6],
         'end': [4,5,6,7,9],
         'seq': ['abc','bcd','cde','def','fgh']
     }

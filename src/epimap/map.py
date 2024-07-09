@@ -3,6 +3,7 @@ from Bio import Seq
 import pandas as pd
 
 def _float_peptide(start, seq):
+    start = int(start)
     floating_peptide = "-" * start + seq
     return floating_peptide
 
