@@ -1,0 +1,15 @@
+# contents of pyproject.toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "epimap"
+version = "0.0.1"
+
+requires-python = ">=3.10"
+
+dependencies = [
+  "pandas",
+  "biopython"
+]
