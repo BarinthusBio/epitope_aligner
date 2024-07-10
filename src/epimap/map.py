@@ -14,7 +14,7 @@ def float_peptides(table, index, start_col="start", seq_col="seq"):
         lambda row: _float_peptide(row[start_col], row[seq_col], index=index),
         axis=1
     )
-    floating_peptides = floating_peptides.apply(Seq.Seq)
+    # floating_peptides = floating_peptides.apply(Seq.Seq)
     floating_peptides = floating_peptides.tolist()
     return floating_peptides
 
