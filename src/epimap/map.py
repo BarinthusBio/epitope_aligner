@@ -1,4 +1,5 @@
 
+import re
 from Bio import Seq
 import pandas as pd
 
@@ -46,3 +47,16 @@ def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
             matches.append(seqaa == epiaa)
     score = sum(matches)/len(matches)
     return score, matches
+
+def locate_peptide(seq, index, includeend):
+    # This regex pattern matches a string with non hypher at start and end and
+    # anything inbetween (including hyphens)
+    pattern = "[^-].*[^-]"
+    seq = str(seq)
+    start, end = re.search(pattern, seq).span()
+    if index == 1:
+        start += 1
+        end += 1
+    if includeend:
+        end -= 1
+    return start, end
