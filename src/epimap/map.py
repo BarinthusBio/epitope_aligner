@@ -36,7 +36,7 @@ def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
         the sequence.
         - matches (list): List of booleans for matches of each non-gap position.
     """
-    assert len(sequence) > len(epitope), f"The epitope ({epitope}) is longer than the sequence."
+    assert len(sequence) >= len(epitope), f"The epitope ({epitope}) is longer than the sequence."
     if toupper:
         sequence = sequence.upper()
         epitope = epitope.upper()
