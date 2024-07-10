@@ -2,15 +2,16 @@
 from Bio import Seq
 import pandas as pd
 
-def _float_peptide(start, seq):
+def _float_peptide(start, seq, index):
+    if index == 1:
+        start = start -1
     start = int(start)
-    start = start -1
     floating_peptide = "-" * start + seq
     return floating_peptide
 
-def float_peptides(table, start_col="start", seq_col="seq"):
+def float_peptides(table, index, start_col="start", seq_col="seq"):
     floating_peptides = table.apply(
-        lambda row: _float_peptide(row[start_col], row[seq_col]),
+        lambda row: _float_peptide(row[start_col], row[seq_col], index=index),
         axis=1
     )
     floating_peptides = floating_peptides.apply(Seq.Seq)
@@ -35,6 +36,7 @@ def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
         the sequence.
         - matches (list): List of booleans for matches of each non-gap position.
     """
+    assert len(sequence) > len(epitope), "The epitope is longer than the sequence."
     if toupper:
         sequence = sequence.upper()
         epitope = epitope.upper()
