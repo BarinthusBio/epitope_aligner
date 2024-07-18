@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-def stretch(epitopes, length_col="length", start_col="start"):
+def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
     stretched = []
     epitopes = epitopes.copy()
     epitopes["position"] = epitopes.start
@@ -12,7 +12,7 @@ def stretch(epitopes, length_col="length", start_col="start"):
         mask = updated_pos.length >= i
         updated_pos = updated_pos[mask]
         updated_pos.position = updated_pos.position + i
-        updated_pos['residue'] = updated_pos['seq'].apply(lambda x: x[i])#
+        updated_pos['residue'] = updated_pos[seq_col].apply(lambda x: x[i])#
         stretched.append(updated_pos)
     stretched = pd.concat(stretched)
     stretched = stretched.sort_values([start_col, "position"])
