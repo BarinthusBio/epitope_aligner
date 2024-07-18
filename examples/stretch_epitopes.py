@@ -7,10 +7,10 @@ from epimap import map, stretch
 sequence = "abcdefghi"
 epitopes = pd.DataFrame(
     {
-        'start': [1.0,2,3,4,6],
-        'end': [4,5,6,7,9],
-        'seq': ['abc','bcd','cde','def','fgh'],
-        'mhc_allele': ["x","x","y","z","z"]
+        'start': [1.0,2,2,6],
+        'end': [4,5,5,9],
+        'seq': ['abc','bcd','bcd','fgh'],
+        'mhc_allele': ["x","x","y","z"]
     }
 )
 # Each epitope needs a length column to indicate how
@@ -28,7 +28,8 @@ stretched_epitopes = stretch.stretch(epitopes)
 # Use groupby on the new position column and then apply whatever function you like
 
 # For example size counts the number of epitopes overlapping a given position
-stretched_epitopes.groupby("position").size()
+positional_count = stretched_epitopes.groupby("position").size()
+positional_count
 
 # Or you can apply any function you like to different columns using agg
 stretched_epitopes.groupby("position").agg(
@@ -38,11 +39,15 @@ stretched_epitopes.groupby("position").agg(
     n_alleles = ('mhc_allele', lambda x: len(set(x)))
 )
 
+# Note that there are not records for positions without any epitopes
+# But we can add them with add_empty_positions()
+stretch.add_empty_positions(positional_count, len(sequence), 1, 0)
+
+
 # You can also group by position and some other value.
 # This is useful for populating a grid with values.
 
 # Number of epitopes for a given mhc allele at a given position
 allele_position_count = stretched_epitopes.groupby(["mhc_allele", "position"]).size()
-
 stretch.make_grid(stretched_epitopes, allele_position_count, 1, "mhc_allele", len(sequence))
 
