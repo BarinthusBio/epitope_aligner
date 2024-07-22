@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 from epimap import map, stretch
+import itertools
 
 #Define an example sequence and set of epitopes
 sequence = "abcdefghi"
@@ -49,5 +50,10 @@ stretch.add_empty_positions(positional_count, len(sequence), 1, 0)
 
 # Number of epitopes for a given mhc allele at a given position
 allele_position_count = stretched_epitopes.groupby(["mhc_allele", "position"]).size()
-stretch.make_grid(stretched_epitopes, allele_position_count, 1, "mhc_allele", len(sequence))
+stretch.make_grid(
+    allele_position_count,
+    index=1,
+    seq_length=len(sequence),
+    empty_value=0
+)
 
