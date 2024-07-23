@@ -9,7 +9,7 @@ sequence = "abcdefghi"
 epitopes = pd.DataFrame(
     {
         'start': [1.0,2,2,6],
-        'end': [4,5,5,9],
+        'end': [3,4,4,8],
         'seq': ['abc','bcd','bcd','fgh'],
         'mhc_allele': ["x","x","y","z"]
     }

@@ -8,18 +8,6 @@ from epimap import map, stretch, utils
 # how to get length
 # check residues with indexes
 
-sequence = "abcdefghi"
-epitopes = pd.DataFrame(
-    {
-        'start': [1.0,2,2,6],
-        'end': [4,5,5,9],
-        'seq': ['abc','bcd','bcd','fgh'],
-        'mhc_allele': ["x","x","y","z"]
-    }
-)
-# Each epitope needs a length column to indicate how
-# much it needs to be stretched
-epitopes['length'] = epitopes.seq.apply(len)
 
 @pytest.fixture(params=[0,1], ids=["0index","1index"])
 def index(request):
@@ -43,8 +31,84 @@ def epitopes(sequence, index, includeend):
         includeend=includeend
     )
 
-def test_stretch_size(epitopes):
+def test_stretch_size(epitopes, index):
     stretched_epitopes = stretch.stretch(epitopes)
     total_stretch_size = sum(stretched_epitopes.groupby(["seq", "start"]).size())
     assert sum(epitopes.length) == total_stretch_size
 
+@pytest.fixture
+def grid(sequence, epitopes, index):
+    epitopes['allele'] = np.random.choice(["x","y","z"], epitopes.shape[0])
+    stretched_epitopes = stretch.stretch(epitopes)
+    allele_position_count = stretched_epitopes.groupby(["allele", "position"]).size()
+    grid = stretch.make_grid(
+        allele_position_count,
+        index=index,
+        seq_length=len(sequence),
+        empty_value=0
+    )
+    return grid
+
+def test_grid_sum(epitopes, grid):
+    epitope_sum = epitopes.groupby('allele').length.sum()
+    epitope_sum.sort_index(inplace=True)
+    grid_sum = grid.sum(axis=1)
+    grid_sum.sort_index(inplace=True)
+    assert all(epitope_sum == grid_sum)
+
+def test_grid_pos_sum(sequence, index, includeend):
+    epitopes = utils.random_epitopes(
+        sequence,
+        n=100,
+        epitope_lengths=(5,15),
+        index=index,
+        includeend=includeend
+    )
+    epitopes['allele'] = np.random.choice(["x","y","z"], epitopes.shape[0])
+    stretched_epitopes = stretch.stretch(epitopes)
+    allele_position_count = stretched_epitopes.groupby(["allele", "position"]).size()
+    position_sum = allele_position_count.groupby('position').sum()
+    pos_sums = []
+    for i in range(index, len(sequence)+index):
+        i
+        pos_sums.append(position_sum[position_sum.index == i].sum())
+    grid = stretch.make_grid(
+        allele_position_count,
+        index=index,
+        seq_length=len(sequence),
+        empty_value=0
+    )
+    assert all(grid.sum(axis=0) == pos_sums)
+
+def test_grid_width(sequence, grid):
+    assert grid.shape[1] == len(sequence)
+
+@pytest.fixture
+def iedb_epitopes():
+    sequence = "abcdefghi"
+    iedb_epitopes = pd.DataFrame({
+        'start': [1.0,2,2,6],
+        'end': [3,4,4,8],
+        'seq': ['abc','bcd','bcd','fgh'],
+        'mhc_allele': ["x","x","y","z"]
+    })
+    iedb_epitopes['length'] = iedb_epitopes.seq.apply(len)
+    return sequence,iedb_epitopes
+
+def test_iedb_epitope_grid(iedb_epitopes):
+    sequence, iedb_epitopes = iedb_epitopes
+    stretched_epitopes = stretch.stretch(iedb_epitopes)
+    allele_position_count = stretched_epitopes.groupby(["mhc_allele", "position"]).size()
+    grid = stretch.make_grid(
+        allele_position_count,
+        index=1,
+        seq_length=len(sequence),
+        empty_value=0
+    )
+    grid.sort_index(inplace=True)
+    expected = np.array([
+        [1,2,2,1,0,0,0,0,0],
+        [0,1,1,1,0,0,0,0,0],
+        [0,0,0,0,0,1,1,1,0]
+    ])
+    assert all(grid == expected)
