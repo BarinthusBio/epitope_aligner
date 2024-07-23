@@ -21,10 +21,10 @@ def random_epitopes(sequence, n, epitope_lengths, index, includeend):
     epitopes = pd.DataFrame({
         "start":starts,
         "end":ends,
-        "length":lengths
     })
     epitopes.end = epitopes.apply(lambda row: row.end if row.end<len(sequence) else len(sequence), axis=1)
     epitopes['seq'] = epitopes.apply(lambda row:sequence[row.start:row.end+includeend], axis=1)
+    epitopes['length'] = epitopes.seq.apply(len)
     epitopes.start = epitopes.start + index
     epitopes.end = epitopes.end + index
     return epitopes

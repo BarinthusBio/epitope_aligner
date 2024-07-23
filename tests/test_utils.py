@@ -26,6 +26,10 @@ def epitopes(sequence, index, includeend):
         includeend=includeend
     )
 
+def test_seq_len(epitopes):
+    len_matches = epitopes.apply(lambda row: len(row.seq)==row.length, axis=1)
+    assert all(len_matches)
+
 def test_random_epitopes(sequence, epitopes, index):
     floating_epitopes = map.float_peptides(epitopes, index)
     scores = ([map.score_epitope_alignment(epi, sequence)[0] for epi in floating_epitopes])
