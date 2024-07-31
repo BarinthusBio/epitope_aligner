@@ -1,6 +1,7 @@
 
 import re
-from Bio import Seq
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 import pandas as pd
 
 def _float_peptide(start, seq, index):
@@ -10,13 +11,16 @@ def _float_peptide(start, seq, index):
     floating_peptide = "-" * start + seq
     return floating_peptide
 
-def float_peptides(table, index, start_col="start", seq_col="seq"):
+def float_peptides(table, index, start_col="start", seq_col="seq", id_col=None):
     floating_peptides = table.apply(
         lambda row: _float_peptide(row[start_col], row[seq_col], index=index),
         axis=1
     )
     # floating_peptides = floating_peptides.apply(Seq.Seq)
     floating_peptides = floating_peptides.tolist()
+    if id_col != None:
+        ids = table[id_col]
+        floating_peptides = [SeqRecord(Seq(seq), id=id) for id,seq in zip(ids,floating_peptides)]
     return floating_peptides
 
 def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):

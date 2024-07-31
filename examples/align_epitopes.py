@@ -14,6 +14,7 @@ from epimap import map
 sequence = "abcdefghi"
 epitopes = pd.DataFrame(
     {
+        'name': ["A", "B", "C", "D", "E"],
         'start': [1.0,2,3,4,6],
         'end': [4,5,6,7,9],
         'seq': ['abc','bcd','cde','def','fgh']
@@ -70,3 +71,5 @@ for epitope in floating_epitopes:
     print(sequence)
     print(epitope)
 
+# Make a Biopython SeqRecord when floating peptides
+map.float_peptides(epitopes, index=1, id_col="name")
