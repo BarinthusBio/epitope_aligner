@@ -5,6 +5,16 @@ from Bio.SeqRecord import SeqRecord
 import pandas as pd
 
 def _float_peptide(start, seq, index):
+    """Add gaps to the start of a sequence to it aligns with its parent.
+
+    Args:
+        start (int): The start position of the peptide
+        seq (str): The sequence to float
+        index (int): Counting index, i.e. do the position counts start at 0 or 1?
+
+    Returns:
+        str: The "floating" sequence
+    """
     if index == 1:
         start = start -1
     start = int(start)
@@ -12,6 +22,19 @@ def _float_peptide(start, seq, index):
     return floating_peptide
 
 def float_peptides(table, index, start_col="start", seq_col="seq", id_col=None):
+    """Add gaps to the start of sequences so they align to their parents
+
+    Args:
+        table (pd.DataFrame): Dataframe with sequences and their start position
+        as columns
+        index (int): Counting index, i.e. do the positions start at 0 or 1?
+        start_col (str, optional): Name of the column with start positions. Defaults to "start".
+        seq_col (str, optional): Name of column with sequences. Defaults to "seq".
+        id_col (str, optional): If provided, this column is used as the id for sequence records. Defaults to None.
+
+    Returns:
+        list: List of floating sequences or (if `id_col` provided) a list of SeqRecords
+    """
     floating_peptides = table.apply(
         lambda row: _float_peptide(row[start_col], row[seq_col], index=index),
         axis=1
@@ -53,6 +76,16 @@ def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
     return score, matches
 
 def locate_peptide(seq, index, includeend):
+    """Get start and end position of peptide in aligned sequence
+
+    Args:
+        seq (str): The aligned sequence containing the peptide
+        index (int): Counting index, i.e. do positions start at 0 or 1?
+        includeend (bool): Should the end position be included in the peptide?
+
+    Returns:
+        tuple: Start and end positions of the peptide in the provided sequence
+    """
     # This regex pattern matches a string with non hypher at start and end and
     # anything inbetween (including hyphens)
     pattern = "[^-].*[^-]"
