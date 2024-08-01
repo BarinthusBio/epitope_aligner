@@ -6,6 +6,19 @@ from scipy.cluster.hierarchy import linkage, leaves_list
 import itertools
 
 def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
+    """Stretch a table of epitopes so each row is a single epitope position.
+
+    Args:
+        epitopes (pd.DataFrame): Table of epitopes where each row is an epitope
+        epitopes (_type_): _description_
+        length_col (str, optional): Name of column with epitope lengths. Defaults to "length".
+        start_col (str, optional): Column with start positions. Defaults to "start".
+        seq_col (str, optional): Column with epitope sequence. Defaults to "seq".
+
+    Returns:
+        pd.DataFrame: Stretched epitope table.
+    """
+
     stretched = []
     epitopes = epitopes.copy()
     epitopes["position"] = epitopes.start
@@ -21,6 +34,23 @@ def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
     return stretched
 
 def add_empty_positions(series, index, seq_length, empty_value, position_name="position"):
+    """Add empty positions to a series of values.
+
+    Stretched epitopes can be useful for plotting but they do not include
+    and information on positions without epitopes. For plotting it can be
+    useful to add these in.
+
+    Args:
+        series (pd.Series): Series of values to add missing positions to.
+        index (int): Counting index, i.e. do positions start at 0 or 1?
+        seq_length (int): Length of parent sequence.
+        empty_value (any): Value to use for missing positions.
+        position_name (str, optional): The name of index which describes the position.
+            Defaults to "position".
+
+    Returns:
+        pd.Series: The series with missing positions added with `empty_value`s
+    """
     assert position_name in series.index.names, f"Expected {position_name} in series.index.names"
     series = series.copy()
     full_positions = pd.Series(range(index, seq_length+index))
@@ -39,6 +69,18 @@ def add_empty_positions(series, index, seq_length, empty_value, position_name="p
 
 
 def _non_position_index(index, position_col):
+    """Get name of index which is not the position index
+
+    Args:
+        index (pd.Index): The index to get non-positional name for
+        position_col (str): Name of the positional index
+
+    Raises:
+        AssertionError: Expects two names
+
+    Returns:
+        str: Name of non-positional index
+    """
     names = list(index.names)
     if len(names) != 2:
         raise AssertionError(f"Expected two index names, got {names}")
@@ -48,6 +90,16 @@ def _non_position_index(index, position_col):
 
 
 def order_grid(grid):
+    """Order a grid based on similarity
+
+    Useful for plotting as similar rows are placed together
+
+    Args:
+        grid (pd.DataFrame): Grid to be ordered
+
+    Returns:
+        pd.DataFrame: Ordered grid
+    """
     linkage_data = linkage(grid, method="ward", metric="euclidean")
     order = leaves_list(linkage_data)
     ordered_grid = grid.iloc[order]
@@ -55,6 +107,21 @@ def order_grid(grid):
 
 
 def make_grid(grid_values, index, seq_length, empty_value, position_col="position", row_col=None):
+    """Make a grid describing epitopes by position and a grouping value.
+
+    Each column is a position in the sequence, each row is a group value.
+
+    Args:
+        grid_values (table): Values, groups, positions in long form to make in to grid.
+        index (int): Counting index, i.e. do positions start at 0 or 1?
+        seq_length (int): length of the sequence being cast to a grid
+        empty_value (any): Value to add for missing values.
+        position_col (str, optional): Name of positions. Defaults to "position".
+        row_col (str, optional): Name of grouping vector. Defaults to None.
+
+    Returns:
+        pd.DataFrame: Grid describing epitopes by position and a grouping value.
+    """
     grid_values = add_empty_positions(
         series=grid_values,
         seq_length=seq_length,
