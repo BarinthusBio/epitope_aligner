@@ -10,7 +10,8 @@ def _float_peptide(start, seq, index):
     Args:
         start (int): The start position of the peptide
         seq (str): The sequence to float
-        index (int): Counting index, i.e. do the position counts start at 0 or 1?
+        index (int): Counting index, i.e. do the position counts start at
+            0 or 1?
 
     Returns:
         str: The "floating" sequence
@@ -25,15 +26,19 @@ def float_peptides(table, index, start_col="start", seq_col="seq", id_col=None):
     """Add gaps to the start of sequences so they align to their parents
 
     Args:
-        table (pd.DataFrame): Dataframe with sequences and their start position
-        as columns
+        table (pd.DataFrame): Dataframe with sequences and their start
+            position as columns
         index (int): Counting index, i.e. do the positions start at 0 or 1?
-        start_col (str, optional): Name of the column with start positions. Defaults to "start".
-        seq_col (str, optional): Name of column with sequences. Defaults to "seq".
-        id_col (str, optional): If provided, this column is used as the id for sequence records. Defaults to None.
+        start_col (str, optional): Name of the column with start positions.
+            Defaults to "start".
+        seq_col (str, optional): Name of column with sequences. Defaults to
+            "seq".
+        id_col (str, optional): If provided, this column is used as the id
+            for sequence records. Defaults to None.
 
     Returns:
-        list: List of floating sequences or (if `id_col` provided) a list of SeqRecords
+        list: List of floating sequences or (if `id_col` provided) a list
+            of SeqRecords
     """
     floating_peptides = table.apply(
         lambda row: _float_peptide(row[start_col], row[seq_col], index=index),
@@ -53,14 +58,17 @@ def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
         epitope (str): Aligned epitope sequence
         sequence (str): Sequence epitopes are aligned to
         gap (str, optional): Gap characters to ignore.
-            Use a list of strings to ignore multiple gap types. Defaults to "-".
-        toupper (bool, optional): Convert epitope and sequence to upper case before
+            Use a list of strings to ignore multiple gap types.
+            Defaults to "-".
+        toupper (bool, optional): Convert epitope and sequence to upper
+            case before
         comparison. Defaults to True.
 
     Returns:
         tuple: (score, matches)
 
-        - score (float): The proportion of non-gap epitope positions that match
+        - score (float): The proportion of non-gap epitope positions that
+            match
         the sequence.
         - matches (list): List of booleans for matches of each non-gap position.
     """
