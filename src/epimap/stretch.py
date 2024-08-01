@@ -1,9 +1,10 @@
 """Stretch epitopes to all the positions they cover
 """
-import numpy as np
+
 import pandas as pd
 from scipy.cluster.hierarchy import linkage, leaves_list
 import itertools
+
 
 def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
     """Stretch a table of epitopes so each row is a single epitope position.
@@ -27,13 +28,16 @@ def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
         mask = updated_pos.length > i
         updated_pos = updated_pos[mask]
         updated_pos.position = updated_pos.position + i
-        updated_pos['residue'] = updated_pos[seq_col].apply(lambda x: x[i])#
+        updated_pos["residue"] = updated_pos[seq_col].apply(lambda x: x[i])  #
         stretched.append(updated_pos)
     stretched = pd.concat(stretched)
     stretched = stretched.sort_values([start_col, "position"])
     return stretched
 
-def add_empty_positions(series, index, seq_length, empty_value, position_name="position"):
+
+def add_empty_positions(
+    series, index, seq_length, empty_value, position_name="position"
+):
     """Add empty positions to a series of values.
 
     Stretched epitopes can be useful for plotting but they do not include
@@ -51,15 +55,19 @@ def add_empty_positions(series, index, seq_length, empty_value, position_name="p
     Returns:
         pd.Series: The series with missing positions added with `empty_value`s
     """
-    assert position_name in series.index.names, f"Expected {position_name} in series.index.names"
+    assert (
+        position_name in series.index.names
+    ), f"Expected {position_name} in series.index.names"
     series = series.copy()
-    full_positions = pd.Series(range(index, seq_length+index))
+    full_positions = pd.Series(range(index, seq_length + index))
     names = [name for name in series.index.names if name != position_name]
     index_levels = [series.index.unique(name) for name in names]
     for levels in itertools.product(*index_levels):
         series.sort_index(inplace=True)
         try:
-            missing_positions = full_positions[~full_positions.isin(series.loc[levels].index)]
+            missing_positions = full_positions[
+                ~full_positions.isin(series.loc[levels].index)
+            ]
         except KeyError:
             missing_positions = full_positions.copy()
         for i in missing_positions:
@@ -106,7 +114,9 @@ def order_grid(grid):
     return ordered_grid
 
 
-def make_grid(grid_values, index, seq_length, empty_value, position_col="position", row_col=None):
+def make_grid(
+    grid_values, index, seq_length, empty_value, position_col="position", row_col=None
+):
     """Make a grid describing epitopes by position and a grouping value.
 
     Each column is a position in the sequence, each row is a group value.
@@ -123,10 +133,7 @@ def make_grid(grid_values, index, seq_length, empty_value, position_col="positio
         pd.DataFrame: Grid describing epitopes by position and a grouping value.
     """
     grid_values = add_empty_positions(
-        series=grid_values,
-        seq_length=seq_length,
-        index=index,
-        empty_value=empty_value
+        series=grid_values, seq_length=seq_length, index=index, empty_value=empty_value
     )
     if not row_col:
         row_col = _non_position_index(grid_values.index, position_col=position_col)
@@ -151,4 +158,3 @@ def make_grid(grid_values, index, seq_length, empty_value, position_col="positio
 #     for i,count in grid_values.items():
 #         grid.loc[i[0], i[1]] = count
 #     return grid
-

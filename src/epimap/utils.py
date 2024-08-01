@@ -1,9 +1,10 @@
 """Utility functions such as random epitopes
 """
+
 import numpy as np
 import pandas as pd
-from epimap import map
 import matplotlib.pyplot as plt
+
 
 def random_seq(seq_length, AAs="ARNDCQEGHILKMFPSTWYV"):
     """Generate a random sequence, useful for tests.
@@ -21,6 +22,7 @@ def random_seq(seq_length, AAs="ARNDCQEGHILKMFPSTWYV"):
     seq = "".join(seq)
     return seq
 
+
 def random_epitopes(sequence, n, epitope_lengths, index, includeend):
     """Generate random epitopes for a sequence, useful for tests.
 
@@ -34,25 +36,30 @@ def random_epitopes(sequence, n, epitope_lengths, index, includeend):
     Returns:
         pd.DataFrame: Table of randomly generated epitopes.
     """
-    lengths = np.random.randint(
-        epitope_lengths[0],
-        epitope_lengths[1],
-        n
-    )
-    starts = np.random.randint(0, len(sequence)-epitope_lengths[0], n)
+    lengths = np.random.randint(epitope_lengths[0], epitope_lengths[1], n)
+    starts = np.random.randint(0, len(sequence) - epitope_lengths[0], n)
     ends = starts + lengths
-    epitopes = pd.DataFrame({
-        "start":starts,
-        "end":ends,
-    })
-    epitopes.end = epitopes.apply(lambda row: row.end if row.end<len(sequence) else len(sequence), axis=1)
-    epitopes['seq'] = epitopes.apply(lambda row:sequence[row.start:row.end+includeend], axis=1)
-    epitopes['length'] = epitopes.seq.apply(len)
+    epitopes = pd.DataFrame(
+        {
+            "start": starts,
+            "end": ends,
+        }
+    )
+    epitopes.end = epitopes.apply(
+        lambda row: row.end if row.end < len(sequence) else len(sequence), axis=1
+    )
+    epitopes["seq"] = epitopes.apply(
+        lambda row: sequence[row.start:row.end + includeend], axis=1
+    )
+    epitopes["length"] = epitopes.seq.apply(len)
     epitopes.start = epitopes.start + index
     epitopes.end = epitopes.end + index
     return epitopes
 
-def plot_line(dataframe, y, start_col="start", end_col="end", jitter=0, ax=None, **kwargs):
+
+def plot_line(
+    dataframe, y, start_col="start", end_col="end", jitter=0, ax=None, **kwargs
+):
     """Plot epitope values as a line showing the epitope's location.
 
     Args:
@@ -68,16 +75,15 @@ def plot_line(dataframe, y, start_col="start", end_col="end", jitter=0, ax=None,
     Returns:
         matplotlib.Axes: Axes with the generated plot
     """
-    if ax == None:
+    if ax is None:
         ax = plt.gca()
     dataframe = dataframe.copy()
     jitter = np.random.uniform(0, jitter, dataframe.shape[0])
-    dataframe['jitter'] = jitter
-    for i,row in dataframe.iterrows():
+    dataframe["jitter"] = jitter
+    for i, row in dataframe.iterrows():
         ax.plot(
             (row.start, row.end),
-            (row[y]+row['jitter'], row[y]+row['jitter']),
-            **kwargs
+            (row[y] + row["jitter"], row[y] + row["jitter"]),
+            **kwargs,
         )
     return ax
-

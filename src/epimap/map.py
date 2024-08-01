@@ -1,11 +1,11 @@
-
 import re
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-import pandas as pd
+
 
 def _float_peptide(start, seq, index):
     """Add gaps to the start of a sequence to it aligns with its parent.
+
 
     Args:
         start (int): The start position of the peptide
@@ -17,10 +17,11 @@ def _float_peptide(start, seq, index):
         str: The "floating" sequence
     """
     if index == 1:
-        start = start -1
+        start = start - 1
     start = int(start)
     floating_peptide = "-" * start + seq
     return floating_peptide
+
 
 def float_peptides(table, index, start_col="start", seq_col="seq", id_col=None):
     """Add gaps to the start of sequences so they align to their parents
@@ -41,15 +42,17 @@ def float_peptides(table, index, start_col="start", seq_col="seq", id_col=None):
             of SeqRecords
     """
     floating_peptides = table.apply(
-        lambda row: _float_peptide(row[start_col], row[seq_col], index=index),
-        axis=1
+        lambda row: _float_peptide(row[start_col], row[seq_col], index=index), axis=1
     )
     # floating_peptides = floating_peptides.apply(Seq.Seq)
     floating_peptides = floating_peptides.tolist()
-    if id_col != None:
+    if id_col is not None:
         ids = table[id_col]
-        floating_peptides = [SeqRecord(Seq(seq), id=id) for id,seq in zip(ids,floating_peptides)]
+        floating_peptides = [
+            SeqRecord(Seq(seq), id=id) for id, seq in zip(ids, floating_peptides)
+        ]
     return floating_peptides
+
 
 def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
     """Proportion of aligned epitope positions that match the sequence
@@ -72,7 +75,9 @@ def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
         the sequence.
         - matches (list): List of booleans for matches of each non-gap position.
     """
-    assert len(sequence) >= len(epitope), f"The epitope ({epitope}) is longer than the sequence."
+    assert len(sequence) >= len(
+        epitope
+    ), f"The epitope ({epitope}) is longer than the sequence."
     if toupper:
         sequence = sequence.upper()
         epitope = epitope.upper()
@@ -80,8 +85,9 @@ def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
     for seqaa, epiaa in zip(sequence, epitope):
         if epiaa not in gap:
             matches.append(seqaa == epiaa)
-    score = sum(matches)/len(matches)
+    score = sum(matches) / len(matches)
     return score, matches
+
 
 def locate_peptide(seq, index, includeend):
     """Get start and end position of peptide in aligned sequence
