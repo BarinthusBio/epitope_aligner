@@ -15,4 +15,5 @@ Deactivate it with `deactivate`.
 
 Install in editable mode with `pip install -e .`.
 
-
+# Make docs
+`pdoc -d google -o docs/ epimap`.
