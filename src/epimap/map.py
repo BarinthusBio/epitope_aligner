@@ -145,3 +145,23 @@ def align_coords(coordinate:int, aligned_seq:str, index: Literal[0,1], gap="-") 
             raise Exception(f"{coordinate} not a valid position in ungapped aligned_seq") from e
     return new_coord
 
+def unalign_coordinate(coordinate: int, aligned_seq: str, index: Literal[0, 1], gap="-") -> int:
+    """Convert aligned coordinate to unaligned
+
+    Convert a position in an anligned sequence to the equivalent in
+    the unaligned sequence.
+
+    Args:
+        coordinate (int): the zero-indexed python coordinate
+        aligned_seq (str): Aligned sequence the coordinate refers to.
+        index (Literal[0, 1]): Counting index, i.e. do the position
+            counts start at 0 or 1?
+        gap (str, optional):  Character used for alignment gaps. Defaults to "-".
+
+    Returns:
+        int: The equivalent coordinate in an unaligned sequence.
+    """
+    gaps = aligned_seq[: (coordinate - index + 1)].count(gap)
+    new_coord = coordinate - gaps
+    return new_coord
+

@@ -34,6 +34,13 @@ def aligned_seq(sequence):
 def test_align_coordinate(epitopes, aligned_seq, index, includeend):
     epitopes['newstart'] = epitopes.start.apply(map.align_coords, aligned_seq=aligned_seq, index=index)
     epitopes['newend'] = epitopes.end.apply(map.align_coords, aligned_seq=aligned_seq, index=index)
-    epitopes['alseq'] = epitopes.apply(lambda x: aligned_seq[x.newstart-index:x.newend-index+includeend], axis=1)
-    assert all(epitopes.seq == epitopes.alseq.str.replace("-",""))
+    epitopes['aligned_seq'] = epitopes.apply(lambda x: aligned_seq[x.newstart-index:x.newend-index+includeend], axis=1)
+    assert all(epitopes.seq == epitopes.aligned_seq.str.replace("-",""))
 
+def test_unalign_coordinate(epitopes, aligned_seq, index, includeend, sequence):
+    epitopes['newstart'] = epitopes.start.apply(map.align_coords, aligned_seq=aligned_seq, index=index)
+    epitopes['newend'] = epitopes.end.apply(map.align_coords, aligned_seq=aligned_seq, index=index)
+    epitopes['oldstart'] = epitopes.newstart.apply(map.unalign_coordinate, aligned_seq=aligned_seq, index=index)
+    epitopes['oldend'] = epitopes.newend.apply(map.unalign_coordinate, aligned_seq=aligned_seq, index=index)
+    epitopes['unaligned_seq'] = epitopes.apply(lambda x: sequence[x.oldstart-index:x.oldend-index+includeend], axis=1)
+    assert all(epitopes.seq == epitopes.unaligned_seq)
