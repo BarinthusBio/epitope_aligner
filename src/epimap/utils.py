@@ -56,6 +56,29 @@ def random_epitopes(sequence, n, epitope_lengths, index, includeend):
     epitopes.end = epitopes.end + index
     return epitopes
 
+def random_gaps(seq: str, gap_prob: float, gap_size_interval:tuple[int, int]) -> str:
+    """Introduce gaps to a sequence to simulate alignment
+
+    Args:
+        seq (str): Sequence to introduce gaps to
+        gap_prob (float): Probability of introducing a gap at each
+            position
+        gap_size_interval (tuple[int, int]): Minimum (inclusive) and maximum (exclusive)
+            size of gaps introduced.
+
+    Returns:
+        str: The sequence with gaps.
+    """
+    aligned_seq = []
+    gap_prob = 0.1
+    for a in seq:
+        if gap_prob > np.random.random():
+            gap_size = np.random.randint(gap_size_interval[0], gap_size_interval[1])
+            aligned_seq.append("-" * gap_size)
+        aligned_seq.append(a)
+    aligned_seq = "".join(aligned_seq)
+    return aligned_seq
+
 
 def plot_line(
     dataframe, y, start_col="start", end_col="end", jitter=0, ax=None, **kwargs

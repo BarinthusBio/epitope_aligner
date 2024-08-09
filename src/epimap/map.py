@@ -1,3 +1,4 @@
+from typing import Literal
 import re
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -111,3 +112,36 @@ def locate_peptide(seq, index, includeend):
     if includeend:
         end -= 1
     return start, end
+
+def align_coords(coordinate:int, aligned_seq:str, index: Literal[0,1], gap="-") -> int:
+    """Convert coordinate from unaligned to aligned position
+
+    The position in an unaligned sequence is converted to the
+    equivalent position in an aligned version of the sequence.
+
+    Note though that if you use it for the end of a slice (:x) it may
+    run to the end of the next gaps.
+
+    Args:
+        coordinate (int): Position in an unaligned sequence.
+        aligned_seq (str): The aligned version of the sequence.
+        index (Literal[0,1]): Counting index, i.e. do the position counts start at
+            0 or 1?
+        gap (str, optional): Character used for alignment gaps. Defaults to "-".
+
+    Raises:
+        Exception: If the new coordinate raises an IndexError and is
+            not the length of the sequence (accounting for index).
+
+    Returns:
+        int: The new coordinate
+    """
+    try:
+        new_coord = [i for i, aa in enumerate(aligned_seq, index) if aa != gap][coordinate-index]
+    except IndexError as e:
+        if coordinate - index == len(aligned_seq.replace(gap,"")):
+            new_coord = len(aligned_seq) + index
+        else:
+            raise Exception(f"{coordinate} not a valid position in ungapped aligned_seq") from e
+    return new_coord
+
