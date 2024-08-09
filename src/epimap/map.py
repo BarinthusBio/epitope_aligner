@@ -76,9 +76,8 @@ def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
         the sequence.
         - matches (list): List of booleans for matches of each non-gap position.
     """
-    assert len(sequence) >= len(
-        epitope
-    ), f"The epitope ({epitope}) is longer than the sequence."
+    if not len(sequence) >= len(epitope):
+        raise AssertionError(f"The epitope ({epitope}) is longer than the sequence.")
     if toupper:
         sequence = sequence.upper()
         epitope = epitope.upper()
@@ -113,7 +112,8 @@ def locate_peptide(seq, index, includeend):
         end -= 1
     return start, end
 
-def align_coords(coordinate:int, aligned_seq:str, index: Literal[0,1], gap="-") -> int:
+
+def align_coords(coordinate: int, aligned_seq: str, index: Literal[0, 1], gap="-") -> int:
     """Convert coordinate from unaligned to aligned position
 
     The position in an unaligned sequence is converted to the
@@ -139,11 +139,12 @@ def align_coords(coordinate:int, aligned_seq:str, index: Literal[0,1], gap="-") 
     try:
         new_coord = [i for i, aa in enumerate(aligned_seq, index) if aa != gap][coordinate-index]
     except IndexError as e:
-        if coordinate - index == len(aligned_seq.replace(gap,"")):
+        if coordinate - index == len(aligned_seq.replace(gap, "")):
             new_coord = len(aligned_seq) + index
         else:
             raise Exception(f"{coordinate} not a valid position in ungapped aligned_seq") from e
     return new_coord
+
 
 def unalign_coordinate(coordinate: int, aligned_seq: str, index: Literal[0, 1], gap="-") -> int:
     """Convert aligned coordinate to unaligned
@@ -164,4 +165,3 @@ def unalign_coordinate(coordinate: int, aligned_seq: str, index: Literal[0, 1], 
     gaps = aligned_seq[: (coordinate - index + 1)].count(gap)
     new_coord = coordinate - gaps
     return new_coord
-

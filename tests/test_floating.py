@@ -35,8 +35,11 @@ def test_score_1_toupper():
     true_scores = [1,2/3,2/3,2/3,1/3]
     assert scores == pytest.approx(true_scores)
 
-
-
+def test_score_length_assertion():
+    seq = "ABC"
+    epi = "-BCD"
+    with pytest.raises(AssertionError):
+        map.score_epitope_alignment(epi, seq)
 
 # To write...
 # Test score with/out upper

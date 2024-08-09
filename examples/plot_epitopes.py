@@ -28,7 +28,12 @@ stretched_epitopes = stretch.stretch(epitopes)
 # Count how many epitopes overlap each position
 positional_count = stretched_epitopes.groupby("position").size()
 # add in missing positions
-positional_count = stretch.add_empty_positions(positional_count, len(sequence), 1, 0)
+positional_count = stretch.add_empty_positions(
+    positional_count,
+    seq_length=len(sequence),
+    index=1,
+    empty_value=0
+)
 # Plot the number of epitopes at each position
 plt.plot(positional_count)
 plt.show()

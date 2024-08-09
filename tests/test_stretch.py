@@ -36,6 +36,19 @@ def test_stretch_size(epitopes, index):
     total_stretch_size = sum(stretched_epitopes.groupby(["seq", "start"]).size())
     assert sum(epitopes.length) == total_stretch_size
 
+def test_position_name_assertion(epitopes, sequence, index, ):
+    stretched_epitopes = stretch.stretch(epitopes)
+    positional_count = stretched_epitopes.groupby("position").size()
+    with pytest.raises(AssertionError):
+        stretch.add_empty_positions(
+            positional_count,
+            seq_length=len(sequence),
+            index=1,
+            empty_value=0,
+            position_name="missing name"
+        )
+
+
 @pytest.fixture
 def grid(sequence, epitopes, index):
     epitopes['allele'] = np.random.choice(["x","y","z"], epitopes.shape[0])

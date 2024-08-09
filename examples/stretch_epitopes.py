@@ -42,7 +42,12 @@ stretched_epitopes.groupby("position").agg(
 
 # Note that there are not records for positions without any epitopes
 # But we can add them with add_empty_positions()
-stretch.add_empty_positions(positional_count, len(sequence), 1, 0)
+stretch.add_empty_positions(
+    positional_count,
+    seq_length=len(sequence),
+    index=1,
+    empty_value=0
+)
 
 
 # You can also group by position and some other value.

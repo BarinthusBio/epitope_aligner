@@ -56,7 +56,8 @@ def random_epitopes(sequence, n, epitope_lengths, index, includeend):
     epitopes.end = epitopes.end + index
     return epitopes
 
-def random_gaps(seq: str, gap_prob: float, gap_size_interval:tuple[int, int]) -> str:
+
+def random_gaps(seq: str, gap_prob: float, gap_size_interval: tuple[int, int]) -> str:
     """Introduce gaps to a sequence to simulate alignment
 
     Args:

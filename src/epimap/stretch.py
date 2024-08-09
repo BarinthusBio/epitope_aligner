@@ -36,7 +36,7 @@ def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
 
 
 def add_empty_positions(
-    series, index, seq_length, empty_value, position_name="position"
+    series, seq_length, index, empty_value, position_name="position"
 ):
     """Add empty positions to a series of values.
 
@@ -55,9 +55,8 @@ def add_empty_positions(
     Returns:
         pd.Series: The series with missing positions added with `empty_value`s
     """
-    assert (
-        position_name in series.index.names
-    ), f"Expected {position_name} in series.index.names"
+    if position_name not in series.index.names:
+        raise AssertionError(f"Expected {position_name} in series.index.names")
     series = series.copy()
     full_positions = pd.Series(range(index, seq_length + index))
     names = [name for name in series.index.names if name != position_name]
