@@ -43,7 +43,7 @@ def test_position_name_assertion(epitopes, sequence, index, ):
         stretch.add_empty_positions(
             positional_count,
             seq_length=len(sequence),
-            index=1,
+            index=index,
             empty_value=0,
             position_name="missing name"
         )
