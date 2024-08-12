@@ -17,4 +17,4 @@ def bandit(session):
 def tests(session):
     session.install("pytest", "pytest-cov")
     session.install(".")
-    session.run("pytest", "--cov=epimap")
+    session.run("pytest", "--cov=epimap", "--cov-report=term-missing")
