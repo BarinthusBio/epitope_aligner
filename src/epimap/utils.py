@@ -46,7 +46,7 @@ def random_epitopes(sequence, n, epitope_lengths, index, includeend):
         }
     )
     epitopes.end = epitopes.apply(
-        lambda row: row.end if row.end < len(sequence) else len(sequence), axis=1
+        lambda row: row.end if row.end < len(sequence) else len(sequence)-1, axis=1
     )
     epitopes["seq"] = epitopes.apply(
         lambda row: sequence[row.start:row.end + includeend], axis=1
