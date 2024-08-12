@@ -60,7 +60,7 @@ aligned_seq[i]
 j = map.unalign_coordinate(i, aligned_seq, index=0)
 aligned_seq[i] == seq[j]
 
-"""Again, we can `apply` this to several epitopes at once.
+"""As before, we can `apply` this to several epitopes at once.
 And verify that the unaligned positions match the original
 positions we started with. And again, if you use these positions
 to slice the sequences as we do here, be careful if you are not using

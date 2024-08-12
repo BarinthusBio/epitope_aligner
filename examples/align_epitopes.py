@@ -2,7 +2,7 @@
 # and assess how well they match
 
 # Different people use different numbering systems for their epitope
-# positions, and we can accomidate that. IEDB uses a 1-index and
+# positions, and we can accomodate that. IEDB uses a 1-index and
 # the end position is part of the epitope, compared to python
 # which uses 0-indexing and when slicing iterables the end position
 # is not included.
