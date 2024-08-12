@@ -69,14 +69,7 @@ def test_grid_sum(epitopes, grid):
     grid_sum.sort_index(inplace=True)
     assert all(epitope_sum == grid_sum)
 
-def test_grid_pos_sum(sequence, index, includeend):
-    epitopes = utils.random_epitopes(
-        sequence,
-        n=100,
-        epitope_lengths=(5,15),
-        index=index,
-        includeend=includeend
-    )
+def test_grid_pos_sum(sequence, epitopes, index):
     epitopes['allele'] = np.random.choice(["x","y","z"], epitopes.shape[0])
     stretched_epitopes = stretch.stretch(epitopes)
     allele_position_count = stretched_epitopes.groupby(["allele", "position"]).size()

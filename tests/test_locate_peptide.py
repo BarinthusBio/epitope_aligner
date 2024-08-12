@@ -32,4 +32,6 @@ def test_locate_peptide(epitopes, index, includeend):
     located_pos = [map.locate_peptide(floater, index, includeend) for floater in floating_epitopes]
     epitopes['located_start'] = [pos[0] for pos in located_pos]
     epitopes['located_end'] = [pos[1] for pos in located_pos]
-    assert all((epitopes['start'] == epitopes['located_start']) & (epitopes['end'] == epitopes['located_end']))
+    starts_match = epitopes['start'] == epitopes['located_start']
+    ends_match = epitopes['end'] == epitopes['located_end']
+    assert all(starts_match & ends_match)

@@ -27,8 +27,10 @@ def epitopes(sequence, index, includeend):
     )
 
 def test_seq_len(epitopes, includeend):
-    len_matches = epitopes.apply(lambda row: len(row.seq)==row.length==(row.end-row.start+includeend), axis=1)
-    assert all(len_matches)
+    seq_lengths = epitopes.seq.apply(len)
+    lengths = epitopes.length
+    intervals = epitopes.end - epitopes.start + includeend
+    assert all([sl==l==i for sl,l,i in zip(seq_lengths, lengths, intervals)])
 
 
 def test_random_epitopes(sequence, epitopes, index):
