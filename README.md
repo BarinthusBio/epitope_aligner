@@ -78,8 +78,8 @@ and can be converted to html with `jupyter nbconvert --to html --output-dir docs
 
 ## Set up
 Create a virtual environment with `python3 -m venv .venv`.
+Activate that environment with `. .venv/bin/activate`.
 Install in editable mode with `pip install -e .`.
-Activat that environment with `. .venv/bin/activate`.
 Deactivate it with `deactivate`.
 
 ## Nox
