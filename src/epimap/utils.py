@@ -106,7 +106,7 @@ def plot_line(
     dataframe["jitter"] = jitter
     for i, row in dataframe.iterrows():
         ax.plot(
-            (row.start, row.end),
+            (row[start_col], row[end_col]),
             (row[y] + row["jitter"], row[y] + row["jitter"]),
             **kwargs,
         )
