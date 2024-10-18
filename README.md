@@ -1,5 +1,5 @@
-# epimap
-Easily map epitope coordinates onto sequences and back,
+# Epitope aligner
+Easily map epitope coordinates between sequences in an alignment,
 regardless of which coordinate system you are using.
 This lets you combine epitopes from different sources and calculate
 things like epitope density in a set of proteins.
@@ -13,13 +13,13 @@ things like epitope density in a set of proteins.
 
 # Install
 Install directly from github using one of:
-- `pip install git+https://github.com/Vaccitech/epimap.git`
-- `pip install git+git@github.com:Vaccitech/epimap.git`
+- `pip install git+https://github.com/Vaccitech/epitope_aligner.git`
+- `pip install git+git@github.com:Vaccitech/epitope_aligner.git`
 
 # Quick start
-Import functions `epimap` modules.
+Import functions `epitope_aligner` modules.
 ```
-from epimap import map, stretch, utils
+from epitope_aligner import map, stretch, utils
 ```
 Let use a random sequence and random epitopes for examples.
 ```
@@ -68,11 +68,11 @@ Read the examples to see how to calculate epitope density with this.
 
 # Examples
 Detailed examples are in `examples/` as jupyter notebooks,
-and can be converted to html with `jupyter nbconvert --to html --output-dir docs/epimap/examples examples/*.ipynb --TagRemovePreprocessor.remove_cell_tags=hidden`.
+and can be converted to html with `jupyter nbconvert --to html --output-dir docs/epitope_aligner/examples examples/*.ipynb --TagRemovePreprocessor.remove_cell_tags=hidden`.
 
 # Docs
 ## Make docs
-`pdoc -d google -o docs/ epimap`.
+`pdoc -d google -o docs/ epitope_aligner`.
 
 # Dev
 

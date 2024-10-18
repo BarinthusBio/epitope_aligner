@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 import pandas as pd
-from epimap import map, stretch, utils
+from epitope_aligner import map, stretch, utils
 
 # missing first residue?
 # how to get length

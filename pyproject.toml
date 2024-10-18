@@ -4,8 +4,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "epimap"
-version = "0.0.2"
+name = "epitope_aligner"
+version = "0.0.3dev"
 
 requires-python = ">=3.10"
 

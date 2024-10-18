@@ -1,4 +1,4 @@
-from epimap import map, utils
+from epitope_aligner import map, utils
 import pytest
 
 @pytest.fixture(params=[0,1], ids=["0index","1index"])

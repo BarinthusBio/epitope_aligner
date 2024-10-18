@@ -17,11 +17,11 @@ def bandit(session):
 def tests(session):
     session.install("pytest", "pytest-cov")
     session.install(".")
-    session.run("pytest", "--cov=epimap", "--cov-report=term-missing")
+    session.run("pytest", "--cov=epitope_aligner", "--cov-report=term-missing")
 
 @nox.session
 def docs(session):
     session.install("pdoc", "nbconvert")
     session.install(".")
-    session.run("jupyter", "nbconvert", "--to", "html", "--output-dir", "docs/epimap/examples", "examples/*.ipynb", "--TagRemovePreprocessor.remove_cell_tags=hidden")
-    session.run("pdoc", "-d", "google", "-o", "docs/", "epimap")
+    session.run("jupyter", "nbconvert", "--to", "html", "--output-dir", "docs/epitope_aligner/examples", "examples/*.ipynb", "--TagRemovePreprocessor.remove_cell_tags=hidden")
+    session.run("pdoc", "-d", "google", "-o", "docs/", "epitope_aligner")

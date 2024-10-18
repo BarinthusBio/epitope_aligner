@@ -1,5 +1,5 @@
 """
-There are detailed examples demonstrating the main abilities of `epimap`.
+There are detailed examples demonstrating the main abilities of `epitope_aligner`.
 Links to all of them are listed below, including an intro to coordinate systems.
 
 - Primer on coordinate systems. [`index` and `includeend`](examples/coordinate_system.html)

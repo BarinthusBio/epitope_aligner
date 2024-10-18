@@ -1,4 +1,4 @@
-from epimap import map, utils
+from epitope_aligner import map, utils
 import pandas as pd
 import pytest
 
