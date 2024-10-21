@@ -28,7 +28,7 @@ def epitopes(sequence, index, includeend):
     )
 
 def test_locate_peptide(epitopes, index, includeend):
-    floating_epitopes = map.float_peptides(epitopes, index=index)
+    floating_epitopes = map.float_peptides(table=epitopes, parent_seq=None, index=index)
     located_pos = [map.locate_peptide(floater, index, includeend) for floater in floating_epitopes]
     epitopes['located_start'] = [pos[0] for pos in located_pos]
     epitopes['located_end'] = [pos[1] for pos in located_pos]

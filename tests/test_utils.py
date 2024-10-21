@@ -34,6 +34,10 @@ def test_seq_len(epitopes, includeend):
 
 
 def test_random_epitopes(sequence, epitopes, index):
-    floating_epitopes = map.float_peptides(epitopes, index)
+    floating_epitopes = map.float_peptides(
+        table=epitopes,
+        parent_seq=None,
+        index=index
+    )
     scores = ([map.score_epitope_alignment(epi, sequence)[0] for epi in floating_epitopes])
     assert sum(scores) == len(scores)

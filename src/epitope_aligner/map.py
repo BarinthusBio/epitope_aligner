@@ -4,19 +4,68 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
 
-def _float_peptide(start, seq, index):
-    """Add gaps to the start of a sequence to it aligns with its parent.
+def _align_float(start:int, seq:str, parent_seq:str, index:int, gap:str="-")->str:
+    """Match spacing between peptide and parent seq
+
+    If the peptide spans an insertion in the parent sequence,
+    indicated by gaps, these gaps will be added to the floating
+    peptide. E.g. 'LOPS' in 'ABCD--FGHIJKL--OP--STUVWXYZ'
+    becomes 'L--OP--S'.
+
+    Note, this does not add gaps the start of the peptide.
+    Instead this function is called by _float_peptide() before
+    adding gaps to the start of the peptide.
+
+    Args:
+        start (int): The start position of the peptide
+        seq (str): The sequence to float
+        parent_seq (str): The parent seq the peptide is derived from
+        index (int): Counting index, i.e. do the position counts start at
+            0 or 1?
+        gap (str, optional): The gap character. Defaults to "-".
+
+    Returns:
+        str: The "floating" sequence
+    """
+    if isinstance(start, float):
+        start = int(start)
+    if index == 1:
+        start = start - 1
+    i = 0
+    floating_peptide = []
+    for aa in parent_seq[start:]:
+        if aa == gap:
+            floating_peptide.append(gap)
+        else:
+            floating_peptide.append(seq[i])
+            i += 1
+        if i >= len(seq):
+            break
+    floating_peptide = "".join(floating_peptide)
+    return floating_peptide
+
+
+def _float_peptide(start, seq, parent_seq, index):
+    """Add gaps to sequence to it aligns with its parent.
 
 
     Args:
         start (int): The start position of the peptide
         seq (str): The sequence to float
+        parent_seq (str): The parent seq the peptide is derived from
         index (int): Counting index, i.e. do the position counts start at
             0 or 1?
 
     Returns:
         str: The "floating" sequence
     """
+    if not parent_seq is None:
+        seq = _align_float(
+            start=start,
+            seq=seq,
+            parent_seq=parent_seq,
+            index=index
+        )
     if index == 1:
         start = start - 1
     start = int(start)
@@ -24,12 +73,13 @@ def _float_peptide(start, seq, index):
     return floating_peptide
 
 
-def float_peptides(table, index, start_col="start", seq_col="seq", id_col=None):
-    """Add gaps to the start of sequences so they align to their parents
+def float_peptides(table, parent_seq, index, start_col="start", seq_col="seq", id_col=None):
+    """Add gaps to sequences so they align to their parent
 
     Args:
         table (pd.DataFrame): Dataframe with sequences and their start
             position as columns
+        parent_seq (str): The parent seq the peptide is derived from.
         index (int): Counting index, i.e. do the positions start at 0 or 1?
         start_col (str, optional): Name of the column with start positions.
             Defaults to "start".
@@ -43,7 +93,12 @@ def float_peptides(table, index, start_col="start", seq_col="seq", id_col=None):
             of SeqRecords
     """
     floating_peptides = table.apply(
-        lambda row: _float_peptide(row[start_col], row[seq_col], index=index), axis=1
+        lambda row: _float_peptide(
+            start = row[start_col],
+            seq = row[seq_col],
+            parent_seq=parent_seq,
+            index=index
+        ), axis=1
     )
     # floating_peptides = floating_peptides.apply(Seq.Seq)
     floating_peptides = floating_peptides.tolist()
