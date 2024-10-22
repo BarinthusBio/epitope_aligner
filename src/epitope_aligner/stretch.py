@@ -36,12 +36,12 @@ def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
 
 
 def add_empty_positions(
-    series, seq_length, index, empty_value, position_name="position"
+    series, parent_seq_length, index, empty_value, position_name="position"
 ):
     """Add empty positions to a series of values.
 
     Stretched epitopes can be useful for plotting but they do not include
-    and information on positions without epitopes. For plotting it can be
+    any information on positions without epitopes. For plotting it can be
     useful to add these in.
 
     Args:
@@ -58,7 +58,7 @@ def add_empty_positions(
     if position_name not in series.index.names:
         raise AssertionError(f"Expected {position_name} in series.index.names")
     series = series.copy()
-    full_positions = pd.Series(range(index, seq_length + index))
+    full_positions = pd.Series(range(index, parent_seq_length + index))
     names = [name for name in series.index.names if name != position_name]
     index_levels = [series.index.unique(name) for name in names]
     for levels in itertools.product(*index_levels):
@@ -114,7 +114,7 @@ def order_grid(grid):
 
 
 def make_grid(
-    grid_values, index, seq_length, empty_value, position_col="position", row_col=None
+    grid_values, index, parent_seq_length, empty_value, position_col="position", row_col=None
 ):
     """Make a grid describing epitopes by position and a grouping value.
 
@@ -132,7 +132,7 @@ def make_grid(
         pd.DataFrame: Grid describing epitopes by position and a grouping value.
     """
     grid_values = add_empty_positions(
-        series=grid_values, seq_length=seq_length, index=index, empty_value=empty_value
+        series=grid_values, seq_length=parent_seq_length, index=index, empty_value=empty_value
     )
     if not row_col:
         row_col = _non_position_index(grid_values.index, position_col=position_col)
