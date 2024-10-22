@@ -63,21 +63,21 @@ class ParentSeqSerialiser(object):
 
 
 def _align_float(start:int, seq:str, parent_seq:str, index:int, gap:str="-")->str:
-    """Match spacing between peptide and parent seq
+    """Match spacing between epitope and parent sequence
 
-    If the peptide spans an insertion in the parent sequence,
+    If the epitope spans an insertion in the parent sequence,
     indicated by gaps, these gaps will be added to the floating
-    peptide. E.g. 'LOPS' in 'ABCD--FGHIJKL--OP--STUVWXYZ'
+    epitope. E.g. 'LOPS' in 'ABCD--FGHIJKL--OP--STUVWXYZ'
     becomes 'L--OP--S'.
 
-    Note, this does not add gaps the start of the peptide.
+    Note, this does not add gaps the start of the epitope.
     Instead this function is called by _float_peptide() before
-    adding gaps to the start of the peptide.
+    adding gaps to the start of the epitope.
 
     Args:
-        start (int): The start position of the peptide
-        seq (str): The sequence to float
-        parent_seq (str): The parent seq the peptide is derived from
+        start (int): The start position of the epitope
+        seq (str): The epitope sequence to float
+        parent_seq (str): The parent sequence the epitope is derived from
         index (int): Counting index, i.e. do the position counts start at
             0 or 1?
         gap (str, optional): The gap character. Defaults to "-".
@@ -104,13 +104,13 @@ def _align_float(start:int, seq:str, parent_seq:str, index:int, gap:str="-")->st
 
 
 def _float_epitope(start, seq, parent_seq, index):
-    """Add gaps to sequence to it aligns with its parent.
+    """Add gaps to epitope sequence so it aligns with its parent sequence.
 
 
     Args:
-        start (int): The start position of the peptide
-        seq (str): The sequence to float
-        parent_seq (str): The parent seq the peptide is derived from
+        start (int): The start position of the epitope
+        seq (str): The epitope sequence to float
+        parent_seq (str): The parent sequence the epitope is derived from
         index (int): Counting index, i.e. do the position counts start at
             0 or 1?
 
@@ -135,9 +135,9 @@ def float_epitopes(table, parent_seq:str|dict, index, start_col="start", seq_col
     """Add gaps to sequences so they align to their parent
 
     Args:
-        table (pd.DataFrame): Dataframe with sequences and their start
-            position as columns
-        parent_seq (str|dict): The parent seq the peptide is derived from.
+        table (pd.DataFrame): Dataframe of epitopes with sequences and their
+            start position as columns.
+        parent_seq (str|dict): The parent seq the epitope is derived from.
         index (int): Counting index, i.e. do the positions start at 0 or 1?
         start_col (str, optional): Name of the column with start positions.
             Defaults to "start".
@@ -172,24 +172,22 @@ def float_epitopes(table, parent_seq:str|dict, index, start_col="start", seq_col
 
 
 def _score_epitope_alignment(seq, parent_seq, gap="-", toupper=True):
-    """Proportion of aligned peptide positions that match the sequence
+    """Proportion of aligned epitope positions that match the parent sequence
 
     Args:
-        seq (str): Aligned peptide sequence
-        parent_seq (str): Sequence peptides are aligned to
+        seq (str): Aligned epitope sequence.
+        parent_seq (str): Sequence the epitope is aligned to.
         gap (str, optional): Gap characters to ignore.
             Use a list of strings to ignore multiple gap types.
             Defaults to "-".
         toupper (bool, optional): Convert peptide and sequence to upper
-            case before
-        comparison. Defaults to True.
+            case before comparison. Defaults to True.
 
     Returns:
         tuple: (score, matches)
 
-        - score (float): The proportion of non-gap peptide positions that
-            match
-        the sequence.
+        - score (float): The proportion of non-gap epitope positions that
+            match the sequence.
         - matches (list): List of booleans for matches of each non-gap position.
     """
     if not len(parent_seq) >= len(seq):
@@ -205,7 +203,32 @@ def _score_epitope_alignment(seq, parent_seq, gap="-", toupper=True):
     return score, matches
 
 
-def score_epitope_alignments(table, parent_seq, seq_col, parent_col=None, gap="-", toupper=True):
+def score_epitope_alignments(table, parent_seq:str|dict, seq_col:str, parent_col:str|None=None, gap:str="-", toupper:bool=True):
+    """Score alignment between epitopes and parent sequences
+
+    Args:
+        table (pd.DataFrame): DataFrame of epitopes
+        parent_seq (str | dict): A single parent sequence sting to use for all
+            epitopes or a dictionary of multiple epitopes, or "parent_seq_column".
+            See epitope_aligner.map.ParentSeqSerialiser for details.
+        seq_col (str): Name of the column with epitope sequences in.
+        parent_col (str | None, optional): The column with parent sequence
+            information. If `parent_seq` is a dictionary the information should
+            be keys to the dictionary. If `parent_seq` is the string "parent_seq_column"
+            information should be the parent sequence to use. Defaults to None.
+        gap (str, optional): Gap characters to ignore.
+            Use a list of strings to ignore multiple gap types.
+            Defaults to "-".
+        toupper (bool, optional): Convert peptide and sequence to upper
+            case before comparison. Defaults to True.
+
+    Returns:
+        pd.DataFrame: DataFrame with two columns.
+            - score (float): The proportion of non-gap epitope positions that
+                match the sequence.
+            - matches (list): List of booleans for matches of each non-gap position.
+
+    """
     pss = ParentSeqSerialiser(parent_seq_object=parent_seq)
     if parent_col is None:
         parent_col=seq_col
@@ -224,7 +247,10 @@ def score_epitope_alignments(table, parent_seq, seq_col, parent_col=None, gap="-
 
 
 def locate_epitope(aligned_seq, index, includeend):
-    """Get start and end position of peptide in aligned sequence
+    """Get start and end position of epitope in aligned sequence
+
+    Returns the coordinates of the start and end of the epitope,
+    i.e. discounting leading and trailing gaps.
 
     Args:
         aligned_seq (str): The aligned epitope sequence
@@ -280,7 +306,34 @@ def _align_coord(coordinate: int, aligned_parent_seq: str, index: Literal[0, 1],
     return new_coord
 
 
-def align_coords(table, aligned_parent_seq, coord_col, index, parent_col=None, gap="-"):
+def align_coords(table, aligned_parent_seq:dict|str, coord_col:str, index:Literal[0,1], parent_col:str|None=None, gap="-"):
+    """Convert column of unaligned coordinates to aligned coordinates.
+
+    The positions in an unaligned antigen sequence are converted to the
+    equivalent position in an aligned version of the antigen sequence.
+
+    Note though that if you use it for the end of a slice (:x) it may
+    run to the end of the next gaps.
+
+    Args:
+        table (pd.DataFrame): Dataframe of epitopes
+        aligned_parent_seq (dict | str): Aligned parent sequence or dictionary of
+            sequences. A single parent sequence sting to use for all
+            epitopes or a dictionary of multiple epitopes, or "parent_seq_column".
+            See epitope_aligner.map.ParentSeqSerialiser for details.
+        coord_col (str): Name of column containing coordinates in the unaligned
+            sequence
+        index (Literal[0,1]): Counting index, i.e. do the position counts start at
+            0 or 1?
+        parent_col (str | None, optional): The column with parent sequence
+            information. If `parent_seq` is a dictionary the information should
+            be keys to the dictionary. If `parent_seq` is the string "parent_seq_column"
+            information should be the parent sequence to use. Defaults to None.
+        gap (str, optional): _description_. Defaults to "-".
+
+    Returns:
+        Series(int): The new aligned coordinates as a series of integers.
+    """
     pss = ParentSeqSerialiser(parent_seq_object=aligned_parent_seq)
     if parent_col is None:
         parent_col = coord_col
@@ -316,7 +369,31 @@ def _unalign_coord(coordinate: int, aligned_parent_seq: str, index: Literal[0, 1
     new_coord = coordinate - gaps
     return new_coord
 
-def unalign_coords(table, aligned_parent_seq, coord_col, index, parent_col=None, gap="-"):
+def unalign_coords(table, aligned_parent_seq:dict|str, coord_col:str, index:Literal[0,1], parent_col:str|None=None, gap="-"):
+    """Convert column of aligned coordinates to unaligned coordinates
+
+    Convert positions in an anligned sequence to the equivalent in
+    the unaligned sequence.
+
+    Args:
+        table (pd.DataFrame): Dataframe of epitopes
+        aligned_parent_seq (dict | str): Aligned parent sequence or dictionary of
+            sequences. A single parent sequence sting to use for all
+            epitopes or a dictionary of multiple epitopes, or "parent_seq_column".
+            See epitope_aligner.map.ParentSeqSerialiser for details.
+        coord_col (str): Name of column containing coordinates in the unaligned
+            sequence
+        index (Literal[0,1]): Counting index, i.e. do the position counts start at
+            0 or 1?
+        parent_col (str | None, optional): The column with parent sequence
+            information. If `parent_seq` is a dictionary the information should
+            be keys to the dictionary. If `parent_seq` is the string "parent_seq_column"
+            information should be the parent sequence to use. Defaults to None.
+        gap (str, optional): _description_. Defaults to "-".
+
+    Returns:
+        Series(int): The new aligned coordinates as a series of integers.
+    """
     pss = ParentSeqSerialiser(parent_seq_object=aligned_parent_seq)
     if parent_col is None:
         parent_col = coord_col
