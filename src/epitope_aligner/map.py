@@ -4,6 +4,33 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
 
+class ParentSeqSerialiser(object):
+    def __init__(self, parent_seq_object:dict|str):
+        self.parent_seq_object = parent_seq_object
+        self.get_parent_seq = self.get_serialiser()
+
+    def serialise_single_seq(self, parent):
+        return self.parent_seq_object
+    
+    def serialise_parent_seq_dict(self, parent):
+        try:
+            return self.parent_seq_object[parent]
+        except KeyError as e:
+            raise KeyError(f"{parent} not a key in parent_seq_object. Did you set `parent_col`?")
+
+    def serialise_parent_seq_column(self, parent):
+        return parent
+
+    def get_serialiser(self):
+        if isinstance(self.parent_seq_object, dict):
+            serialiser = self.serialise_parent_seq_dict
+        elif self.parent_seq_object == "parent_seq_column":
+            serialiser = self.serialise_parent_seq_column
+        else:
+            serialiser = self.serialise_single_seq
+        return serialiser
+
+
 def _align_float(start:int, seq:str, parent_seq:str, index:int, gap:str="-")->str:
     """Match spacing between peptide and parent seq
 
@@ -45,7 +72,7 @@ def _align_float(start:int, seq:str, parent_seq:str, index:int, gap:str="-")->st
     return floating_peptide
 
 
-def _float_peptide(start, seq, parent_seq, index):
+def _float_epitope(start, seq, parent_seq, index):
     """Add gaps to sequence to it aligns with its parent.
 
 
@@ -73,13 +100,13 @@ def _float_peptide(start, seq, parent_seq, index):
     return floating_peptide
 
 
-def float_peptides(table, parent_seq, index, start_col="start", seq_col="seq", id_col=None):
+def float_epitopes(table, parent_seq:str|dict, index, start_col="start", seq_col="seq", parent_col=None, id_col=None):
     """Add gaps to sequences so they align to their parent
 
     Args:
         table (pd.DataFrame): Dataframe with sequences and their start
             position as columns
-        parent_seq (str): The parent seq the peptide is derived from.
+        parent_seq (str|dict): The parent seq the peptide is derived from.
         index (int): Counting index, i.e. do the positions start at 0 or 1?
         start_col (str, optional): Name of the column with start positions.
             Defaults to "start".
@@ -92,12 +119,15 @@ def float_peptides(table, parent_seq, index, start_col="start", seq_col="seq", i
         list: List of floating sequences or (if `id_col` provided) a list
             of SeqRecords
     """
+    pss = ParentSeqSerialiser(parent_seq_object=parent_seq)
+    if parent_col is None:
+        parent_col = start_col
     floating_peptides = table.apply(
-        lambda row: _float_peptide(
+        lambda row: _float_epitope(
             start = row[start_col],
             seq = row[seq_col],
-            parent_seq=parent_seq,
-            index=index
+            parent_seq = pss.get_parent_seq(row[parent_col]),
+            index = index
         ), axis=1
     )
     # floating_peptides = floating_peptides.apply(Seq.Seq)
@@ -110,45 +140,63 @@ def float_peptides(table, parent_seq, index, start_col="start", seq_col="seq", i
     return floating_peptides
 
 
-def score_epitope_alignment(epitope, sequence, gap="-", toupper=True):
-    """Proportion of aligned epitope positions that match the sequence
+def _score_epitope_alignment(seq, parent_seq, gap="-", toupper=True):
+    """Proportion of aligned peptide positions that match the sequence
 
     Args:
-        epitope (str): Aligned epitope sequence
-        sequence (str): Sequence epitopes are aligned to
+        seq (str): Aligned peptide sequence
+        parent_seq (str): Sequence peptides are aligned to
         gap (str, optional): Gap characters to ignore.
             Use a list of strings to ignore multiple gap types.
             Defaults to "-".
-        toupper (bool, optional): Convert epitope and sequence to upper
+        toupper (bool, optional): Convert peptide and sequence to upper
             case before
         comparison. Defaults to True.
 
     Returns:
         tuple: (score, matches)
 
-        - score (float): The proportion of non-gap epitope positions that
+        - score (float): The proportion of non-gap peptide positions that
             match
         the sequence.
         - matches (list): List of booleans for matches of each non-gap position.
     """
-    if not len(sequence) >= len(epitope):
-        raise AssertionError(f"The epitope ({epitope}) is longer than the sequence.")
+    if not len(parent_seq) >= len(seq):
+        raise AssertionError(f"The peptide ({seq}) is longer than the parent sequence.")
     if toupper:
-        sequence = sequence.upper()
-        epitope = epitope.upper()
+        parent_seq = parent_seq.upper()
+        seq = seq.upper()
     matches = []
-    for seqaa, epiaa in zip(sequence, epitope):
+    for parent_seqaa, epiaa in zip(parent_seq, seq):
         if epiaa not in gap:
-            matches.append(seqaa == epiaa)
+            matches.append(parent_seqaa == epiaa)
     score = sum(matches) / len(matches)
     return score, matches
 
 
-def locate_peptide(seq, index, includeend):
+def score_epitope_alignments(table, parent_seq, seq_col, parent_col=None, gap="-", toupper=True):
+    pss = ParentSeqSerialiser(parent_seq_object=parent_seq)
+    if parent_col is None:
+        parent_col=seq_col
+    scores_matches = table.apply(
+        lambda row: _score_epitope_alignment(
+            seq=row[seq_col],
+            parent_seq = pss.get_parent_seq(row[parent_col]),
+            gap=gap,
+            toupper=toupper
+        ),
+        axis=1,
+        result_type="expand"
+    )
+    scores_matches.columns = ["score", "matches"]
+    return scores_matches
+
+
+def locate_epitope(aligned_seq, index, includeend):
     """Get start and end position of peptide in aligned sequence
 
     Args:
-        seq (str): The aligned sequence containing the peptide
+        aligned_seq (str): The aligned epitope sequence
         index (int): Counting index, i.e. do positions start at 0 or 1?
         includeend (bool): Should the end position be included in the peptide?
 
@@ -158,8 +206,8 @@ def locate_peptide(seq, index, includeend):
     # This regex pattern matches a string with non hypher at start and end and
     # anything inbetween (including hyphens)
     pattern = "[^-].*[^-]"
-    seq = str(seq)
-    start, end = re.search(pattern, seq).span()
+    aligned_seq = str(aligned_seq)
+    start, end = re.search(pattern, aligned_seq).span()
     if index == 1:
         start += 1
         end += 1
@@ -168,18 +216,18 @@ def locate_peptide(seq, index, includeend):
     return start, end
 
 
-def align_coords(coordinate: int, aligned_seq: str, index: Literal[0, 1], gap="-") -> int:
+def _align_coord(coordinate: int, aligned_parent_seq: str, index: Literal[0, 1], gap="-") -> int:
     """Convert coordinate from unaligned to aligned position
 
-    The position in an unaligned sequence is converted to the
-    equivalent position in an aligned version of the sequence.
+    The position in an unaligned antigen sequence is converted to the
+    equivalent position in an aligned version of the antigen sequence.
 
     Note though that if you use it for the end of a slice (:x) it may
     run to the end of the next gaps.
 
     Args:
         coordinate (int): Position in an unaligned sequence.
-        aligned_seq (str): The aligned version of the sequence.
+        aligned_parent_seq (str): The aligned version of the sequence.
         index (Literal[0,1]): Counting index, i.e. do the position counts start at
             0 or 1?
         gap (str, optional): Character used for alignment gaps. Defaults to "-".
@@ -192,16 +240,32 @@ def align_coords(coordinate: int, aligned_seq: str, index: Literal[0, 1], gap="-
         int: The new coordinate
     """
     try:
-        new_coord = [i for i, aa in enumerate(aligned_seq, index) if aa != gap][coordinate-index]
+        new_coord = [i for i, aa in enumerate(aligned_parent_seq, index) if aa != gap][coordinate-index]
     except IndexError as e:
-        if coordinate - index == len(aligned_seq.replace(gap, "")):
-            new_coord = len(aligned_seq) + index
+        if coordinate - index == len(aligned_parent_seq.replace(gap, "")):
+            new_coord = len(aligned_parent_seq) + index
         else:
             raise Exception(f"{coordinate} not a valid position in ungapped aligned_seq") from e
     return new_coord
 
 
-def unalign_coordinate(coordinate: int, aligned_seq: str, index: Literal[0, 1], gap="-") -> int:
+def align_coords(table, aligned_parent_seq, coord_col, index, parent_col=None, gap="-"):
+    pss = ParentSeqSerialiser(parent_seq_object=aligned_parent_seq)
+    if parent_col is None:
+        parent_col = coord_col
+    new_coords = table.apply(
+        lambda row: _align_coord(
+            coordinate=row[coord_col],
+            aligned_parent_seq=pss.get_parent_seq(row[parent_col]),
+            index=index,
+            gap=gap
+        ),
+        axis=1
+    )
+    return new_coords
+    
+
+def _unalign_coord(coordinate: int, aligned_parent_seq: str, index: Literal[0, 1], gap="-") -> int:
     """Convert aligned coordinate to unaligned
 
     Convert a position in an anligned sequence to the equivalent in
@@ -209,7 +273,7 @@ def unalign_coordinate(coordinate: int, aligned_seq: str, index: Literal[0, 1], 
 
     Args:
         coordinate (int): the zero-indexed python coordinate
-        aligned_seq (str): Aligned sequence the coordinate refers to.
+        aligned_parent_seq (str): Aligned sequence the coordinate refers to.
         index (Literal[0, 1]): Counting index, i.e. do the position
             counts start at 0 or 1?
         gap (str, optional):  Character used for alignment gaps. Defaults to "-".
@@ -217,6 +281,21 @@ def unalign_coordinate(coordinate: int, aligned_seq: str, index: Literal[0, 1], 
     Returns:
         int: The equivalent coordinate in an unaligned sequence.
     """
-    gaps = aligned_seq[: (coordinate - index + 1)].count(gap)
+    gaps = aligned_parent_seq[: (coordinate - index + 1)].count(gap)
     new_coord = coordinate - gaps
     return new_coord
+
+def unalign_coords(table, aligned_parent_seq, coord_col, index, parent_col=None, gap="-"):
+    pss = ParentSeqSerialiser(parent_seq_object=aligned_parent_seq)
+    if parent_col is None:
+        parent_col = coord_col
+    new_coords = table.apply(
+        lambda row: _unalign_coord(
+            row[coord_col],
+            aligned_parent_seq=pss.get_parent_seq(row[parent_col]),
+            index=index,
+            gap=gap
+        ),
+        axis=1
+    )
+    return new_coords
