@@ -34,7 +34,7 @@ def test_seq_len(epitopes, includeend):
 
 
 def test_random_epitopes(sequence, epitopes, index):
-    floating_epitopes = map.float_peptides(
+    floating_epitopes = map.float_epitopes(
         table=epitopes,
         parent_seq=None,
         index=index
