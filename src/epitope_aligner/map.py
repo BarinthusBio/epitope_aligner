@@ -5,6 +5,36 @@ from Bio.SeqRecord import SeqRecord
 
 
 class ParentSeqSerialiser(object):
+    """A class to get the correct parent sequence for each epitope
+
+    The method `get_parent_seq()` takes a single argument `parent` and returns
+    the parent sequence.
+
+    How to get the parent sequence is based on the value of `parent_seq_object`.
+
+    Attributes:
+        parent_seq_object (dict | str): If `parent_seq_object` is a dictionary,
+        parent sequence names should be keys and the values should be sequences
+        as strings.
+
+        If `parent_seq_object` is a string it is usually a single sequence used
+        for all epitopes.
+    
+        However, if the string is "parent_seq_column" the argument `parent` passed
+        to `get_parent_seq() is assumed to be the parent sequence and is returned
+        as is.
+    
+    Methods:
+        get_parent_seq(parent:str)->str:
+            Returns the parent sequence.
+
+            If `paret_seq_object` is a dictionary, `parent` should be a key in that
+                dictionary.
+            If `parent_seq_object` is the string "parent_seq_column", `parent` should
+                be the parent sequence as is returned as is.
+            If `parent` is anything else, the value of `parent` doesn't matter,
+                `parent_seq_object` is returned regardless.
+    """
     def __init__(self, parent_seq_object:dict|str):
         self.parent_seq_object = parent_seq_object
         self.get_parent_seq = self.get_serialiser()
@@ -22,6 +52,7 @@ class ParentSeqSerialiser(object):
         return parent
 
     def get_serialiser(self):
+        """Determines which function to use for the get_parent_seq() method"""
         if isinstance(self.parent_seq_object, dict):
             serialiser = self.serialise_parent_seq_dict
         elif self.parent_seq_object == "parent_seq_column":
