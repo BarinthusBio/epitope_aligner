@@ -114,7 +114,12 @@ def order_grid(grid):
 
 
 def make_grid(
-    grid_values, index, parent_seq_length, empty_value, position_col="position", row_col=None
+    grid_values,
+    index,
+    parent_seq_length,
+    empty_value,
+    position_col="position",
+    row_col=None,
 ):
     """Make a grid describing epitopes by position and a grouping value.
 
@@ -132,7 +137,10 @@ def make_grid(
         pd.DataFrame: Grid describing epitopes by position and a grouping value.
     """
     grid_values = add_empty_positions(
-        series=grid_values, parent_seq_length=parent_seq_length, index=index, empty_value=empty_value
+        series=grid_values,
+        parent_seq_length=parent_seq_length,
+        index=index,
+        empty_value=empty_value,
     )
     if not row_col:
         row_col = _non_position_index(grid_values.index, position_col=position_col)
