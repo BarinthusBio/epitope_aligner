@@ -47,7 +47,7 @@ def add_empty_positions(
     Args:
         series (pd.Series): Series of values to add missing positions to.
         index (int): Counting index, i.e. do positions start at 0 or 1?
-        seq_length (int): Length of parent sequence.
+        parent_seq_length (int): Length of parent sequence.
         empty_value (any): Value to use for missing positions.
         position_name (str, optional): The name of index which describes the position.
             Defaults to "position".
@@ -123,7 +123,7 @@ def make_grid(
     Args:
         grid_values (table): Values, groups, positions in long form to make in to grid.
         index (int): Counting index, i.e. do positions start at 0 or 1?
-        seq_length (int): length of the sequence being cast to a grid
+        parent_seq_length (int): length of the sequence being cast to a grid
         empty_value (any): Value to add for missing values.
         position_col (str, optional): Name of positions. Defaults to "position".
         row_col (str, optional): Name of grouping vector. Defaults to None.
@@ -132,7 +132,7 @@ def make_grid(
         pd.DataFrame: Grid describing epitopes by position and a grouping value.
     """
     grid_values = add_empty_positions(
-        series=grid_values, seq_length=parent_seq_length, index=index, empty_value=empty_value
+        series=grid_values, parent_seq_length=parent_seq_length, index=index, empty_value=empty_value
     )
     if not row_col:
         row_col = _non_position_index(grid_values.index, position_col=position_col)
