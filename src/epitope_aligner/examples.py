@@ -4,21 +4,21 @@ Links to all of them are listed below, including an intro to coordinate systems.
 
 - [Quickstart]
 - [Cookbook](examples/cookbook.html) detailed discription and examples of all functions.
-    - [Install](examples/cookbook.html#install)
-    - [Background](examples/cookbook.html#background)
-        - [The big idea](examples/cookbook.html#the-big-idea)
-        - [Coordinate system](examples/cookbook.html#coordinate-system)
-        - [Naming conventions](examples/cookbook.html#naming-conventions)
-    - [`align_coords`](examples/cookbook.html#align-coordinates)
-    - [`unalign_coords`](examples/cookbook.html#unaligning-coordinates)
-    - [`float_epitopes`](examples/cookbook.html#float-epitopes)
-        - [Alignment accuracy](examples/cookbook.html#alignment-accuracy)
-    - [`locate_epitopes`](examples/cookbook.html#locate-epitopes)
-    - [Analysis](examples/cookbook.html#analysis)
-        - [`stretch`](examples/cookbook.html#stretch-epitopes)
-        - [`make_grid`](examples/cookbook.html#epitope-grids)
-    - [Utils](examples/cookbook.html#utils)
-    - [Conclusion](examples/cookbook.html#conclusion)
+    - [Install](examples/cookbook.html#Install)
+    - [Background](examples/cookbook.html#Background)
+        - [The big idea](examples/cookbook.html#The-big-idea)
+        - [Coordinate system](examples/cookbook.html#Coordinate-system)
+        - [Naming conventions](examples/cookbook.html#Naming-conventions)
+    - [`align_coords`](examples/cookbook.html#Align-coordinates)
+    - [`unalign_coords`](examples/cookbook.html#Unaligning-coordinates)
+    - [`float_epitopes`](examples/cookbook.html#Float-epitopes)
+        - [Alignment accuracy](examples/cookbook.html#Alignment-accuracy)
+    - [`locate_epitopes`](examples/cookbook.html#Locate-epitopes)
+    - [Analysis](examples/cookbook.html#Analysis)
+        - [`stretch`](examples/cookbook.html#Stretch-epitopes)
+        - [`make_grid`](examples/cookbook.html#Epitope-grids)
+    - [Utils](examples/cookbook.html#Utils)
+    - [Conclusion](examples/cookbook.html#Conclusion)
 
 This module exists to host the example jupyter notebooks.
 """
