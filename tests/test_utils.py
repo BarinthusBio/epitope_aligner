@@ -39,5 +39,5 @@ def test_random_epitopes(sequence, epitopes, index):
         parent_seq=None,
         index=index
     )
-    scores = ([map.score_epitope_alignment(epi, sequence)[0] for epi in floating_epitopes])
+    scores = ([map._score_epitope_alignment(epi, sequence)[0] for epi in floating_epitopes])
     assert sum(scores) == len(scores)
