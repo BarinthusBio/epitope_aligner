@@ -1,5 +1,6 @@
 from typing import Literal
 import re
+import logging
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
@@ -366,6 +367,17 @@ def _unalign_coord(coordinate: int, aligned_parent_seq: str, index: Literal[0, 1
         int: The equivalent coordinate in an unaligned sequence.
     """
     gaps = aligned_parent_seq[: (coordinate - index + 1)].count(gap)
+    try:
+        aa = aligned_parent_seq[coordinate-index]
+    except IndexError:
+        aa = None
+    if aa == gap:
+        gaps -= 1
+        logging.warning(
+            f"Amino acid at {coordinate} is {gap}\n"
+            "Coordinate of gap in ungapped sequence is ambiguous\n"
+            "Coordinate of next nongap character will be returned"
+        )
     new_coord = coordinate - gaps
     return new_coord
 
