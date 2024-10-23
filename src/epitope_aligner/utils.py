@@ -71,7 +71,6 @@ def random_gaps(seq: str, gap_prob: float, gap_size_interval: tuple[int, int]) -
         str: The sequence with gaps.
     """
     aligned_seq = []
-    gap_prob = 0.1
     for a in seq:
         if gap_prob > np.random.random():
             gap_size = np.random.randint(gap_size_interval[0], gap_size_interval[1])
