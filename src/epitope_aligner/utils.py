@@ -46,10 +46,10 @@ def random_epitopes(sequence, n, epitope_lengths, index, includeend):
         }
     )
     epitopes.end = epitopes.apply(
-        lambda row: row.end if row.end < len(sequence) else len(sequence)-1, axis=1
+        lambda row: row.end if row.end < len(sequence) else len(sequence) - 1, axis=1
     )
     epitopes["seq"] = epitopes.apply(
-        lambda row: sequence[row.start:row.end + includeend], axis=1
+        lambda row: sequence[row.start : row.end + includeend], axis=1
     )
     epitopes["length"] = epitopes.seq.apply(len)
     epitopes.start = epitopes.start + index
@@ -71,7 +71,6 @@ def random_gaps(seq: str, gap_prob: float, gap_size_interval: tuple[int, int]) -
         str: The sequence with gaps.
     """
     aligned_seq = []
-    gap_prob = 0.1
     for a in seq:
         if gap_prob > np.random.random():
             gap_size = np.random.randint(gap_size_interval[0], gap_size_interval[1])

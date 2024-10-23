@@ -42,7 +42,7 @@ def test_position_name_assertion(epitopes, sequence, index, ):
     with pytest.raises(AssertionError):
         stretch.add_empty_positions(
             positional_count,
-            seq_length=len(sequence),
+            parent_seq_length=len(sequence),
             index=index,
             empty_value=0,
             position_name="missing name"
@@ -57,7 +57,7 @@ def grid(sequence, epitopes, index):
     grid = stretch.make_grid(
         allele_position_count,
         index=index,
-        seq_length=len(sequence),
+        parent_seq_length=len(sequence),
         empty_value=0
     )
     return grid
@@ -81,7 +81,7 @@ def test_grid_pos_sum(sequence, epitopes, index):
     grid = stretch.make_grid(
         allele_position_count,
         index=index,
-        seq_length=len(sequence),
+        parent_seq_length=len(sequence),
         empty_value=0
     )
     assert all(grid.sum(axis=0) == pos_sums)
@@ -108,7 +108,7 @@ def test_iedb_epitope_grid(iedb_epitopes):
     grid = stretch.make_grid(
         allele_position_count,
         index=1,
-        seq_length=len(sequence),
+        parent_seq_length=len(sequence),
         empty_value=0
     )
     grid.sort_index(inplace=True)
