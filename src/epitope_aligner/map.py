@@ -123,7 +123,7 @@ def _float_epitope(start, seq, parent_seq, index):
     Returns:
         str: The "floating" sequence
     """
-    if not parent_seq is None:
+    if parent_seq is not None:
         seq = _align_float(start=start, seq=seq, parent_seq=parent_seq, index=index)
     if index == 1:
         start = start - 1
