@@ -22,7 +22,7 @@ def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
 
     stretched = []
     epitopes = epitopes.copy()
-    epitopes["position"] = epitopes.start
+    epitopes["position"] = epitopes[start_col]
     for i in range(epitopes[length_col].max()):
         updated_pos = epitopes.copy()
         mask = updated_pos.length > i
