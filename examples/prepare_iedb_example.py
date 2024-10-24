@@ -32,7 +32,7 @@ epitopes = epitopes.rename(columns={
     "curated_source_antigen.ending_position":"end"
 })
 epitopes['antigen_acc'] = epitopes["curated_source_antigen.iri"].str.split(":", expand=True)[1]
-epitopes['antigen_acc'] = epitopes['antigen_acc'].str.replace("\\.\\d", "", regex=True)
+epitopes['antigen_acc'] = epitopes['antigen_acc'].str.replace("\\.\\d+", "", regex=True)
 epitopes['antigen_acc'] = epitopes['antigen_acc'].str.replace("_.$", "", regex=True)
 
 epitopes = epitopes.drop_duplicates(subset=["antigen_acc", "linear_sequence"])
