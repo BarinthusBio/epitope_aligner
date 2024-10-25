@@ -36,9 +36,24 @@ def test_stretch_size(epitopes, index):
     total_stretch_size = sum(stretched_epitopes.groupby(["seq", "start"]).size())
     assert sum(epitopes.length) == total_stretch_size
 
-def test_stretch_start_col():
+
+def test_stretch_custom_cols(epitopes):
     """Add test that start_col argument works"""
-    assert False
+    EPITOPES = epitopes.copy()
+    EPITOPES = EPITOPES.rename(columns = {
+        "start": "START",
+        "length": "LENGTH",
+        "seq": "SEQ"
+    })
+    stretched_epitopes = stretch.stretch(
+        epitopes=EPITOPES,
+        length_col= "LENGTH",
+        start_col= "START",
+        seq_col= "SEQ"
+    )
+    total_stretch_size = sum(stretched_epitopes.groupby(["SEQ", "START"]).size())
+    assert sum(epitopes.length) == total_stretch_size
+
 
 def test_position_name_assertion(epitopes, sequence, index, ):
     stretched_epitopes = stretch.stretch(epitopes)

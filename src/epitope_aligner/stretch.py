@@ -25,7 +25,7 @@ def stretch(epitopes, length_col="length", start_col="start", seq_col="seq"):
     epitopes["position"] = epitopes[start_col]
     for i in range(epitopes[length_col].max()):
         updated_pos = epitopes.copy()
-        mask = updated_pos.length > i
+        mask = updated_pos[length_col] > i
         updated_pos = updated_pos[mask]
         updated_pos.position = updated_pos.position + i
         updated_pos["residue"] = updated_pos[seq_col].apply(lambda x: x[i])  #
