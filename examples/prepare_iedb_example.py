@@ -8,7 +8,9 @@ Align the sequences
 
 import requests
 import pandas as pd
+import re
 import os
+from Bio import SeqIO
 
 base_uri = 'https://query-api.iedb.org'
 table_name = "tcell_search"
@@ -46,14 +48,12 @@ epitopes['length'] = epitopes.linear_sequence.apply(len)
 ontie_mask = epitopes['curated_source_antigen.iri'].str.contains("ONTIE")
 epitopes = epitopes[~ontie_mask]
 
-epitopes = epitopes[[
+epitopes[[
     "antigen_acc",
     "linear_sequence",
     "start", "end",
     "length"
-]]
-
-epitopes.to_csv("examples/epitopes.csv", index=False)
+]].to_csv("examples/epitopes.csv", index=False)
 
 def download_seq(source, acc):
     downloader = _get_downloader(source)
@@ -96,6 +96,24 @@ seqs = [download_seq(aa[0], aa[1]) for aa in antigen_accs]
 
 with open("examples/antigens.fa", "w") as f:
     f.writelines(seqs)
+
+seqs = list(SeqIO.parse("examples/antigens.fa", "fasta"))
+def seqid2acc(id):
+    """strip seq.id to get accession number"""
+    acc = id
+    pipes = acc.count("|")
+    if pipes == 2:
+        parts = acc.split("|")
+        acc = parts[1]
+        if acc == "":
+            acc = parts[2]
+    acc = re.sub("\\.\\d+", "", acc)
+    return acc
+
+for r in seqs:
+    r.id = seqid2acc(r.id)
+
+SeqIO.write(seqs, "examples/antigens.fa", "fasta")
 
 # Align antigens, could use any aligner but mafft is fast
 os.system("mafft examples/antigens.fa > examples/antigens_al.fa")

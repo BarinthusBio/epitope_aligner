@@ -9,8 +9,6 @@ plot epitopes and overall epitope density in the alignment.
 import numpy as np
 import pandas as pd
 from Bio import SeqIO
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import re
@@ -19,29 +17,12 @@ import epitope_aligner.map
 import epitope_aligner.stretch
 import epitope_aligner.utils
 
-# def acc2seq(acc, seqs):
-#     seq = [r for r in seqs if acc in r.id][0]
-#     return seq
-
 seqs = list(SeqIO.parse("examples/antigens_al.fa", "fasta"))
-
-def seqid2acc(id):
-    """strip seq.id to get accession number"""
-    acc = id
-    pipes = acc.count("|")
-    if pipes == 2:
-        parts = acc.split("|")
-        acc = parts[1]
-        if acc == "":
-            acc = parts[2]
-    acc = re.sub("\\.\\d+", "", acc)
-    return acc
 
 # Create dictionary of sequences with accession numbers as keys.
 aligned_parent_seqs = {}
 for r in seqs:
-    acc = seqid2acc(r.id)
-    aligned_parent_seqs[acc] = r
+    aligned_parent_seqs[r.id] = r
 
 epitopes = pd.read_csv("examples/epitopes.csv")
 
@@ -133,7 +114,6 @@ ax[0].set_ylabel("Reference alignment score")
 ax[1].plot(positional_count)
 ax[1].set_ylabel("Epitope count")
 ax[2].matshow(grid, aspect="auto")
-ax[2].set_title("Epitope count by antigen sequence")
 ax[2].set_yticks(np.arange(len(grid.index)), labels=grid.index)
 ax[2].set_xlabel("Position in alignment")
 plt.show()
