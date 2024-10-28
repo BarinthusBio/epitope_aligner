@@ -71,6 +71,7 @@ def test_float_random_peptides(epitopes, sequence, index):
     epitopes['float'] = map.float_epitopes(
         table=epitopes,
         parent_seq=sequence,
+        start_col="start",
         index=index,
         parent_col="parent"
     )
@@ -123,6 +124,7 @@ def test_score_matches_length(epitopes, sequence, index):
     epitopes['float'] = map.float_epitopes(
         table=epitopes,
         parent_seq=sequence,
+        start_col="start",
         index=index,
         parent_col="parent"
     )
@@ -141,6 +143,7 @@ def test_floating_seqrecord(epitopes, index, sequence):
         table=epitopes,
         parent_seq=sequence,
         index=index,
+        start_col="start",
         id_col="seq",
         parent_col="parent"
     )
@@ -152,6 +155,7 @@ def test_locate_peptide(epitopes, sequence, index, includeend):
     floating_epitopes = map.float_epitopes(
         table=epitopes,
         parent_seq=sequence,
+        start_col="start",
         index=index,
         parent_col="parent"
     )
@@ -167,6 +171,7 @@ def test_apply_locate_peptide(epitopes, sequence, index, includeend):
     epitopes['float'] = map.float_epitopes(
         table=epitopes,
         parent_seq=sequence,
+        start_col="start",
         index=index,
         parent_col="parent"
     )

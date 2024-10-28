@@ -37,6 +37,7 @@ def test_random_epitopes(sequence, epitopes, index):
     floating_epitopes = map.float_epitopes(
         table=epitopes,
         parent_seq=None,
+        start_col="start",
         index=index
     )
     scores = ([map._score_epitope_alignment(epi, sequence)[0] for epi in floating_epitopes])

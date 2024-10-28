@@ -136,7 +136,7 @@ def float_epitopes(
     table,
     parent_seq: str | dict,
     index,
-    start_col="start",
+    start_col:str,
     seq_col="seq",
     parent_col=None,
     id_col=None,
@@ -148,8 +148,7 @@ def float_epitopes(
             start position as columns.
         parent_seq (str|dict): The parent seq the epitope is derived from.
         index (int): Counting index, i.e. do the positions start at 0 or 1?
-        start_col (str, optional): Name of the column with start positions.
-            Defaults to "start".
+        start_col (str): Name of the column with start positions.
         seq_col (str, optional): Name of column with sequences. Defaults to
             "seq".
         id_col (str, optional): If provided, this column is used as the id
