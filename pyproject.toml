@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "epitope_aligner"
-version = "0.1.0dev"
+version = "0.1.0"
 
 requires-python = ">=3.10"
 
