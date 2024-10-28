@@ -18,6 +18,8 @@ Links to all of them are listed below, including an intro to coordinate systems.
         - [`stretch`](examples/cookbook.html#Stretch-epitopes)
         - [`make_grid`](examples/cookbook.html#Epitope-grids)
     - [Utils](examples/cookbook.html#Utils)
+        - [Plotting epitopes](#Plotting-epitopes)
+        - [Random data](#Random-data)
     - [Conclusion](examples/cookbook.html#Conclusion)
 
 This module exists to host the example jupyter notebooks.
