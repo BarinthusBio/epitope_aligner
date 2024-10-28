@@ -81,15 +81,21 @@ def random_gaps(seq: str, gap_prob: float, gap_size_interval: tuple[int, int]) -
 
 
 def plot_line(
-    dataframe, y, start_col="start", end_col="end", jitter=0, ax=None, **kwargs
+    table, y, start_col="start", end_col="end", color_col=None, label_col=None, jitter=0, ax=None, **kwargs
 ):
     """Plot epitope values as a line showing the epitope's location.
 
     Args:
-        dataframe (pd.DataFrame): Table of epitopes
+        table (pd.DataFrame): Table of epitopes
         y (str): Column of values to plot
         start_col (str, optional): Column of epitope start positions. Defaults to "start".
         end_col (str, optional): Column of epitope end positions. Defaults to "end".
+        color_col (str, optional): Column of colours for each epitope. The values
+            of this column can be format accepted by matplotlib as a colour.
+        label_col (str, optional): Column to use for labels in legend. Useful
+            when colouring epitopes by a categorical value. If not `None`
+            legend will be added based on this column. Make sure the values
+            of color_col are based on the values in label_col.
         jitter (int, optional): How much to jitter y values to avoid overlapping.
             Defaults to 0.
         ax (matplotlib.Axes, optional): Axes to plot to,
@@ -100,13 +106,28 @@ def plot_line(
     """
     if ax is None:
         ax = plt.gca()
-    dataframe = dataframe.copy()
-    jitter = np.random.uniform(0, jitter, dataframe.shape[0])
-    dataframe["jitter"] = jitter
-    for i, row in dataframe.iterrows():
-        ax.plot(
+    table = table.copy()
+    jitter = np.random.uniform(0, jitter, table.shape[0])
+    table["jitter"] = jitter
+    lines = {}
+    for i, row in table.iterrows():
+        if color_col is not None:
+            try:
+                del kwargs['c']
+            except KeyError:
+                pass
+            kwargs['color'] =  row[color_col]
+        line = ax.plot(
             (row[start_col], row[end_col]),
             (row[y] + row["jitter"], row[y] + row["jitter"]),
             **kwargs,
         )
+        if label_col is None:
+            label = ""
+        else:
+            label = row[label_col]
+        line[0].set_label(label)
+        lines[label] = line[0]
+    if label_col is not None:
+        ax.legend(handles=lines.values())
     return ax
