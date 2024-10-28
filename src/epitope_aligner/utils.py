@@ -81,7 +81,15 @@ def random_gaps(seq: str, gap_prob: float, gap_size_interval: tuple[int, int]) -
 
 
 def plot_line(
-    table, y, start_col="start", end_col="end", color_col=None, label_col=None, jitter=0, ax=None, **kwargs
+    table,
+    y,
+    start_col="start",
+    end_col="end",
+    color_col=None,
+    label_col=None,
+    jitter=0,
+    ax=None,
+    **kwargs,
 ):
     """Plot epitope values as a line showing the epitope's location.
 
@@ -113,10 +121,10 @@ def plot_line(
     for i, row in table.iterrows():
         if color_col is not None:
             try:
-                del kwargs['c']
+                del kwargs["c"]
             except KeyError:
                 pass
-            kwargs['color'] =  row[color_col]
+            kwargs["color"] = row[color_col]
         line = ax.plot(
             (row[start_col], row[end_col]),
             (row[y] + row["jitter"], row[y] + row["jitter"]),
