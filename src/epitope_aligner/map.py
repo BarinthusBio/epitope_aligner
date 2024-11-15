@@ -136,7 +136,7 @@ def float_epitopes(
     table,
     parent_seq: str | dict,
     index,
-    start_col:str,
+    start_col: str,
     seq_col="seq",
     parent_col=None,
     id_col=None,
