@@ -13,7 +13,7 @@ If you have any suggestions or problems, please open an [issue](https://github.c
 
 # Contents
 - [Install](#install)
-- [Quick start](#quickstart)
+- [Quickstart](#quickstart)
 - [Examples](#examples)
 - [Dev](#dev)
 
@@ -133,9 +133,9 @@ positional_count
 # 13    0.0
 # dtype: float64
 ```
-Read the [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html) for tips on calculating more interesting measures than counts.
+Read the [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html#Stretch-epitopes) for tips on calculating more interesting measures than counts.
 
-# [Examples](epitope_aligner/examples.html)
+# Examples
 A real world example is demonstrated in the [quickstart](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
 
 The [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html) provides a detailed description and example of all functions.
