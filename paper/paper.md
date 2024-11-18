@@ -7,6 +7,8 @@ tags:
     - sequence alignment
 authors:
     - name: David A. Wells
+    orcid: 0000-0002-4531-5968
+    corresponding: true
 affiliations:
     - name: Barinthus Biotherapeutics, UK
       index: 1
