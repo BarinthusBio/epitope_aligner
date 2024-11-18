@@ -4,6 +4,11 @@ regardless of which coordinate system you are using.
 This lets you combine epitopes from different sources and calculate
 things like epitope density in a set of proteins.
 
+`epitope_aligner` is a python package hosted on Github at
+[BarinthusBio/epitope_aligner](github.com/BarinthusBio/epitope_aligner)
+with docs at [barinthusbio.github.io/epitope_aligner](barinthusbio.github.io/epitope_aligner/index.html).
+If you have any suggestions or problems, please open an [issue](github.com/BarinthusBio/epitope_aligner/issues).
+
 # Contents
 - [Install](#install)
 - [Quick start](#quickstart)
