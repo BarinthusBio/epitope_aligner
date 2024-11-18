@@ -7,7 +7,6 @@ tags:
     - sequence alignment
 authors:
     - name: David A. Wells
-      corresponding: true
 affiliations:
     - name: Barinthus Biotherapeutics, UK
       index: 1
