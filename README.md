@@ -6,9 +6,8 @@ things like epitope density in a set of proteins.
 
 # Contents
 - [Install](#install)
-- [Quick start](#quick-start)
+- [Quick start](#quickstart)
 - [Examples](#examples)
-- [Docs](#docs)
 - [Dev](#dev)
 
 # Install
@@ -17,7 +16,7 @@ Install directly from github using one of:
 - `pip install git+git@github.com:Vaccitech/epitope_aligner.git`
 
 # Quickstart
-The full quickstart example is [here](examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
+The full quickstart example is [here](epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
 
 In the current minimal example we'll:
 - convert epitope coordinates to an aligned antigen
@@ -25,24 +24,24 @@ In the current minimal example we'll:
 - calculate the number of epitopes at each position in the antigen
 
 For the inverse of these aligning and floating operations
-see the [cookbook](examples/cookbook.html).
+see the [cookbook](epitope_aligner/examples/cookbook.html).
 
 Import functions from `epitope_aligner` modules and pandas to create
 an example dataset.
-```
+```python
 from epitope_aligner import map, stretch, utils
 import pandas as pd
 ```
 
 We'll define a short example antigen sequence, with an aligned
 and unaligned version.
-```
+```python
 aligned_seq = "ABC---DEFGH-IJK--LM"
 seq = aligned_seq.replace("-","")
 ```
 
 We'll define some exmple epitopes with positions in the unaligned antigen sequence.
-```
+```python
 epitopes = pd.DataFrame({
         'start':  [2,      6,      9],
         'end':    [4,      9,      12],
@@ -51,7 +50,7 @@ epitopes = pd.DataFrame({
 })
 epitopes
 ```
-```
+```python
 #    start  end   seq  length
 # 0      2    4   BCD       3
 # 1      6    9  FGHI       4
@@ -60,7 +59,7 @@ epitopes
 
 Let's calculate the start positions of these epitopes in the aligned
 antigen sequence.
-```
+```python
 epitopes['newstart'] = map.align_coords(
     table = epitopes,
     aligned_parent_seq = aligned_seq,
@@ -69,7 +68,7 @@ epitopes['newstart'] = map.align_coords(
 )
 epitopes
 ```
-```
+```python
 #    start  end   seq  length  newstart
 # 0      2    4   BCD       3         2
 # 1      6    9  FGHI       4         9
@@ -77,7 +76,7 @@ epitopes
 ```
 
 Now we can "float" an epitope to line up with its antigen based on a start position and antigen sequence.
-```
+```python
 epitopes['float'] = map.float_epitopes(
     table=epitopes,
     parent_seq=aligned_seq,
@@ -86,20 +85,20 @@ epitopes['float'] = map.float_epitopes(
 )
 epitopes
 ```
-```
+```python
 # Aligned antigen
-ABC---DEFGH-IJK--LM
+# ABC---DEFGH-IJK--LM
 
 # Aligned epitopes
--BC---D
---------FGH-I
-------------IJK--L
+# -BC---D
+# --------FGH-I
+# ------------IJK--L
 ```
 
 We can easily count the number of epitopes overlapping each position
 by "stretching" them. For plotting, it is often helpful to add zeros
 for positions with no epitopes.
-```
+```python
 stretched_epitopes = stretch.stretch(epitopes)
 positional_count = stretched_epitopes.groupby("position").size()
 positional_count = stretch.add_empty_positions(
@@ -110,7 +109,7 @@ positional_count = stretch.add_empty_positions(
 )
 positional_count
 ```
-```
+```python
 # position
 # 1     0.0
 # 2     1.0
@@ -127,24 +126,30 @@ positional_count
 # 13    0.0
 # dtype: float64
 ```
-Read the [cookbook](examples/cookbook.html) for tips on calculating more interesting measures than counts.
+Read the [cookbook](epitope_aligner/examples/cookbook.html#Stretch-epitopes) for tips on calculating more interesting measures than counts.
 
-# Examples
-Detailed examples are in `examples/` as jupyter notebooks,
-and can be converted to html with `jupyter nbconvert --to html --output-dir docs/epitope_aligner/examples examples/*.ipynb --TagRemovePreprocessor.remove_cell_tags=hidden`.
+# [Examples](epitope_aligner/examples.html)
+A real world example is demonstrated in the [quickstart](epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
 
-# Docs
-## Make docs
-`pdoc -d google -o docs/ epitope_aligner`.
+The [cookbook](epitope_aligner/examples/cookbook.html) provides a detailed description and example of all functions.
 
 # Dev
+Details on testing, creating docs, and virtual envinments.
 
-## Set up
+### Dev: Set up
 Create a virtual environment with `python3 -m venv .venv`.
 Activate that environment with `. .venv/bin/activate`.
 Install in editable mode with `pip install -e .`.
 Deactivate it with `deactivate`.
 
-## Nox
-Linting, documentation, examples, and testing can all be run with
-`nox`.
+### Dev: Nox
+Linting, bandit, documentation, examples, and testing can all be run with
+`nox` based on `noxfile.py`. This is also run by github actions.
+
+### Dev: Make docs
+The full guide is `docs/README.md` but in short pdoc generates the
+api documentation and renders the read me, jupyter notebook examples
+are converted to html, and the complete docs are hosted at [barinthusbio.github.io/epitope_aligner/index.html](barinthusbio.github.io/epitope_aligner/index.html).
+
+Generating the docs and hosting them is handled by the github actions, but
+if you want to produce them locally just run `nox`.

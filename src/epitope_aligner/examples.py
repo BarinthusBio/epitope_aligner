@@ -3,7 +3,7 @@ There are detailed examples demonstrating the main abilities of `epitope_aligner
 Links to all of them are listed below, including an intro to coordinate systems.
 
 - [Quickstart](examples/quickstart.html) to show off some of the functionalirty of `epitope_aligner`.
-- [Cookbook](examples/cookbook.html) detailed discription and examples of all functions.
+- [Cookbook](examples/cookbook.html) detailed description and examples of all functions.
     - [Install](examples/cookbook.html#Install)
     - [Background](examples/cookbook.html#Background)
         - [The big idea](examples/cookbook.html#The-big-idea)
