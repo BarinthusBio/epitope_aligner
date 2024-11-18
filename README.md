@@ -5,8 +5,10 @@ This lets you combine epitopes from different sources and calculate
 things like epitope density in a set of proteins.
 
 `epitope_aligner` is a python package hosted on Github at
-[BarinthusBio/epitope_aligner](https://github.com/BarinthusBio/epitope_aligner)
-with docs at [barinthusbio.github.io/epitope_aligner](https://barinthusbio.github.io/epitope_aligner).
+[BarinthusBio/epitope_aligner](https://github.com/BarinthusBio/epitope_aligner).
+
+Full documentation at [barinthusbio.github.io/epitope_aligner](https://barinthusbio.github.io/epitope_aligner).
+
 If you have any suggestions or problems, please open an [issue](https://github.com/BarinthusBio/epitope_aligner/issues).
 
 # Contents
@@ -21,7 +23,7 @@ Install directly from github using one of:
 - `pip install git+git@github.com:Vaccitech/epitope_aligner.git`
 
 # Quickstart
-The full quickstart example is [here](epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
+The full quickstart example is [here](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
 
 In the current minimal example we'll:
 - convert epitope coordinates to an aligned antigen
@@ -29,7 +31,7 @@ In the current minimal example we'll:
 - calculate the number of epitopes at each position in the antigen
 
 For the inverse of these aligning and floating operations
-see the [cookbook](epitope_aligner/examples/cookbook.html).
+see the [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html).
 
 Import functions from `epitope_aligner` modules and pandas to create
 an example dataset.
@@ -131,12 +133,17 @@ positional_count
 # 13    0.0
 # dtype: float64
 ```
-Read the [cookbook](epitope_aligner/examples/cookbook.html#Stretch-epitopes) for tips on calculating more interesting measures than counts.
+Read the [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html) for tips on calculating more interesting measures than counts.
 
 # [Examples](epitope_aligner/examples.html)
-A real world example is demonstrated in the [quickstart](epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
+A real world example is demonstrated in the [quickstart](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
 
-The [cookbook](epitope_aligner/examples/cookbook.html) provides a detailed description and example of all functions.
+The [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html) provides a detailed description and example of all functions.
+
+The [full documentation](https://barinthusbio.github.io/epitope_aligner/epitope_aligner.html) includes function APIs under the submodules:
+- [map](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/map.html)
+- [stretch](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/stretch.html)
+- [utils](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/utils.html)
 
 # Dev
 Details on testing, creating docs, and virtual envinments.
