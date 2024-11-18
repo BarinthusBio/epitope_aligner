@@ -2,8 +2,6 @@ name: Draft PDF
 # from https://github.com/marketplace/actions/open-journals-pdf-generator
 on:
   push:
-    branches:
-      - paper
     paths:
       - paper/**
       - .github/workflows/draft-pdf.yml
