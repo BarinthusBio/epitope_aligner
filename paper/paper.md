@@ -11,7 +11,7 @@ affiliations:
     - name: Barinthus Biotherapeutics, UK
     - index: 1
 date: 13 November 2024
-bibliography: paper/paper.bib
+bibliography: paper.bib
 ---
 
 # Summary
