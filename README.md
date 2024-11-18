@@ -5,9 +5,9 @@ This lets you combine epitopes from different sources and calculate
 things like epitope density in a set of proteins.
 
 `epitope_aligner` is a python package hosted on Github at
-[BarinthusBio/epitope_aligner](github.com/BarinthusBio/epitope_aligner)
-with docs at [barinthusbio.github.io/epitope_aligner](barinthusbio.github.io/epitope_aligner/index.html).
-If you have any suggestions or problems, please open an [issue](github.com/BarinthusBio/epitope_aligner/issues).
+[BarinthusBio/epitope_aligner](https://github.com/BarinthusBio/epitope_aligner)
+with docs at [barinthusbio.github.io/epitope_aligner](https://barinthusbio.github.io/epitope_aligner).
+If you have any suggestions or problems, please open an [issue](https://github.com/BarinthusBio/epitope_aligner/issues).
 
 # Contents
 - [Install](#install)
@@ -154,7 +154,7 @@ Linting, bandit, documentation, examples, and testing can all be run with
 ### Dev: Make docs
 The full guide is `docs/README.md` but in short pdoc generates the
 api documentation and renders the read me, jupyter notebook examples
-are converted to html, and the complete docs are hosted at [barinthusbio.github.io/epitope_aligner/index.html](barinthusbio.github.io/epitope_aligner/index.html).
+are converted to html, and the complete docs are hosted at [barinthusbio.github.io/epitope_aligner/index.html](https://barinthusbio.github.io/epitope_aligner).
 
 Generating the docs and hosting them is handled by the github actions, but
 if you want to produce them locally just run `nox`.
