@@ -18,9 +18,13 @@ If you have any suggestions or problems, please open an [issue](https://github.c
 - [Dev](#dev)
 
 # Install
-Install directly from github using one of:
-- `pip install git+https://github.com/Vaccitech/epitope_aligner.git`
-- `pip install git+git@github.com:Vaccitech/epitope_aligner.git`
+Install from `pip` with:
+```
+pip install epitope-aligner
+```
+<!-- Install directly from github using one of:
+- `pip install git+https://github.com/BarinthusBio/epitope_aligner.git`
+- `pip install git+git@github.com:BarinthusBio/epitope_aligner.git` -->
 
 # Quickstart
 The full quickstart example is [here](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
