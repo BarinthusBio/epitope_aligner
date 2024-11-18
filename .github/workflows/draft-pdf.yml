@@ -6,7 +6,7 @@ on:
       - paper
     paths:
       - paper/**
-
+      - .github/workflows/draft-pdf.yml
 jobs:
   paper:
     runs-on: ubuntu-latest
