@@ -6,10 +6,11 @@ tags:
     - vaccine design
     - sequence alignment
 authors:
-    - name: "David A. Wells"
-    corresponding: true
+    - name: David A. Wells
+      orcid: 0000-0002-4531-5968
+      corresponding: true
 affiliations:
-    - name: "Barinthus Biotherapeutics, UK"
+    - name: Barinthus Biotherapeutics, UK
       index: 1
 date: 13 November 2024
 bibliography: paper.bib
