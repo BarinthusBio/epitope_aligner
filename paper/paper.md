@@ -24,4 +24,7 @@ The location of epitopes in different proteins is not directly comparable unless
 # Availability
 `epitope_aligner` is available at [github.com/BarinthusBio/epitope_aligner](https://github.com/BarinthusBio/epitope_aligner) with installation instructions and detailed examples. The [quickstart](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/quickstart.html) demonstrates combining epitopes from different influenza virus strains. All of the available functions are described in detail in the [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html) and [submodule API docs](https://barinthusbio.github.io/epitope_aligner/epitope_aligner.html).
 
+# Acknowledgements
+DW is employed by Barinthus Biotherapeutics PLC.
+
 # References
