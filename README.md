@@ -165,3 +165,11 @@ are converted to html, and the complete docs are hosted at [barinthusbio.github.
 
 Generating the docs and hosting them is handled by the github actions, but
 if you want to produce them locally just run `nox`.
+
+### Dev: Publish to PyPI
+Uploading requires the `build` and `twine` packages, 
+`pip install --upgrade twine build`.
+
+`python -m build` will create both the `--sdist` and `--wheel`.
+`twine check dist/*` will check the package is ready for uploading.
+`twine upload dist/*` will actually upload to pypi.
