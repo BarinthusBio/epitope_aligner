@@ -5,67 +5,6 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
 
-class ParentSeqSerialiser(object):
-    """A class to get the correct parent sequence for each epitope
-
-    The method `get_parent_seq()` takes a single argument `parent` and returns
-    the parent sequence.
-
-    How to get the parent sequence is based on the value of `parent_seq_object`.
-
-    Attributes:
-        parent_seq_object (dict | str): If `parent_seq_object` is a dictionary,
-        parent sequence names should be keys and the values should be sequences
-        as strings.
-
-        If `parent_seq_object` is a string it is usually a single sequence used
-        for all epitopes.
-
-        However, if the string is "parent_seq_column" the argument `parent` passed
-        to `get_parent_seq() is assumed to be the parent sequence and is returned
-        as is.
-
-    Methods:
-        get_parent_seq(parent:str)->str:
-            Returns the parent sequence.
-
-            If `paret_seq_object` is a dictionary, `parent` should be a key in that
-                dictionary.
-            If `parent_seq_object` is the string "parent_seq_column", `parent` should
-                be the parent sequence as is returned as is.
-            If `parent` is anything else, the value of `parent` doesn't matter,
-                `parent_seq_object` is returned regardless.
-    """
-
-    def __init__(self, parent_seq_object: dict | str):
-        self.parent_seq_object = parent_seq_object
-        self.get_parent_seq = self.get_serialiser()
-
-    def serialise_single_seq(self, parent):
-        return self.parent_seq_object
-
-    def serialise_parent_seq_dict(self, parent):
-        try:
-            return self.parent_seq_object[parent]
-        except KeyError as e:
-            raise KeyError(
-                f"{parent} not a key in parent_seq_object. Did you set `parent_col`?"
-            )
-
-    def serialise_parent_seq_column(self, parent):
-        return parent
-
-    def get_serialiser(self):
-        """Determines which function to use for the get_parent_seq() method"""
-        if isinstance(self.parent_seq_object, dict):
-            serialiser = self.serialise_parent_seq_dict
-        elif self.parent_seq_object == "parent_seq_column":
-            serialiser = self.serialise_parent_seq_column
-        else:
-            serialiser = self.serialise_single_seq
-        return serialiser
-
-
 def _align_float(
     start: int, seq: str, parent_seq: str, index: int, gap: str = "-"
 ) -> str:
@@ -146,11 +85,15 @@ def float_epitopes(
     Args:
         table (pd.DataFrame): Dataframe of epitopes with sequences and their
             start position as columns.
-        parent_seq (str|dict): The parent seq the epitope is derived from.
+        parent_seq (str|dict): A single parent sequence sting to use for all
+            epitopes or a dictionary of multiple epitopes, or "parent_seq_column".
+            See epitope_aligner.map.ParentSeqSerialiser for details.
         index (int): Counting index, i.e. do the positions start at 0 or 1?
         start_col (str): Name of the column with start positions.
         seq_col (str, optional): Name of column with sequences. Defaults to
             "seq".
+        parent_col (str, optional): If provided, this column is used for parent
+            information. Defaults to None.
         id_col (str, optional): If provided, this column is used as the id
             for sequence records. Defaults to None.
 
@@ -457,3 +400,108 @@ def unalign_coords(
         axis=1,
     )
     return new_coords
+
+
+class ParentSeqSerialiser(object):
+    """Get the correct parent sequence for each epitope
+
+    Usually initialised from the `parent_seq` argument of functions like
+    `float_epitopes()`. The function gets the needed parent sequence by calling
+    the `get_parent_seq()` method. How it gets the parent sequence is based on
+    the value of `parent_seq_object` used to initialise the class. 
+    
+    Attributes:
+        parent_seq_object (dict | str):
+            
+            The parent sequence or sequences for epitopes.
+            Can be a dictionary of sequences with parent sequence names as
+            keys and sequence strings as values.
+            Can be a single sequence as a string if all epitopes share a single
+            parent sequence.
+            Alternatively can be the string `"parent_seq_column"` if the parent
+            sequences are given in a column of the epitope table.
+        
+        get_parent_seq (function):
+
+            Function used to return the parent seq. The specific function is
+            determined by the parent_seq_object at initialisation, as described
+            above. For specifics see the `_get_serialiser` method.
+    """
+
+    def __init__(self, parent_seq_object: dict | str):
+        """Initialise the ParentSeqSerializer
+
+        Args:
+            parent_seq_object (dict | str): If the `parent_seq_object` is:
+
+                - a dictionary, it should have parent sequence names as
+                keys and sequence strings as values. Sequence name is used to get
+                sequence.
+
+                - a string, it should usually be a single parent sequence used by
+                all epitopes.
+                
+                - "parent_seq_column", the values in the column `parent_col` (in the
+                calling function) are returned as is. This is useful when there is a column
+                in your epitope table with parent sequence in.
+        """
+        self.parent_seq_object = parent_seq_object
+        self.get_parent_seq = self._get_serialiser()
+
+    def _serialise_single_seq(self, parent)->str:
+        """Returns the parent sequence stored in ParentSeqSerialiser.parent_seq_object
+
+        Args:
+            parent: Ignored, likely because ParentSeqSerialiser was initialised 
+                with a single sequence.
+
+        Returns:
+            str: Single parent sequence used to initialise ParentSeqSerialiser object.
+        """
+        return self.parent_seq_object
+
+    def _serialise_parent_seq_dict(self, parent:str)->str:
+        """Returns the sequence name `parent`
+
+        ParentSeqSerialiser object was initialised with self.parent_seq_object as a
+        dictionary. Keys of that dictionary are sequence names, and values are
+        sequences. Uses the value of `parent` as a key to return a sequence.
+
+        Args:
+            parent (str): Parent sequence name, used as a key
+
+        Raises:
+            KeyError: If the value of `parent` is not a key in self.parent_seq_object
+
+        Returns:
+            str: Parent sequence
+        """
+        try:
+            return self.parent_seq_object[parent]
+        except KeyError as e:
+            raise KeyError(
+                f"{parent} not a key in parent_seq_object. Did you set `parent_col`?"
+            )
+
+    def _serialise_parent_seq_column(self, parent:str)->str:
+        """
+        Returns the value of `parent` unaltered. Useful when epitopes'
+        parent sequences are available in a column.
+
+        Args:
+            parent (str): Parent sequence as a string
+
+        Returns:
+            str: Returns the value of `parent` unaltered
+        """
+        return parent
+
+    def _get_serialiser(self):
+        """Determines which function to use for the get_parent_seq() method"""
+        if isinstance(self.parent_seq_object, dict):
+            serialiser = self._serialise_parent_seq_dict
+        elif self.parent_seq_object == "parent_seq_column":
+            serialiser = self._serialise_parent_seq_column
+        else:
+            serialiser = self._serialise_single_seq
+        return serialiser
