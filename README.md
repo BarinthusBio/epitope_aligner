@@ -13,8 +13,11 @@ If you have any suggestions or problems, please open an [issue](https://github.c
 
 # Contents
 - [Install](#install)
-- [Quickstart](#quickstart)
 - [Examples](#examples)
+    - [Minimal](#minimal-examples)
+    - [Quickstart](#quickstart)
+    - [Cookbook](#cookbook)
+- [Docs](#docs)
 - [Dev](#dev)
 
 # Install
@@ -26,9 +29,8 @@ pip install epitope-aligner
 - `pip install git+https://github.com/BarinthusBio/epitope_aligner.git`
 - `pip install git+git@github.com:BarinthusBio/epitope_aligner.git` -->
 
-# Quickstart
-The full quickstart example is [here](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
-
+# Examples
+## Minimal examples
 In the current minimal example we'll:
 - convert epitope coordinates to an aligned antigen
 - float the epitope sequences to match it
@@ -139,11 +141,13 @@ positional_count
 ```
 Read the [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html#Stretch-epitopes) for tips on calculating more interesting measures than counts.
 
-# Examples
+## Quickstart
 A real world example is demonstrated in the [quickstart](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/quickstart.html) which analyses and plots the epitopes from different strains of the influenza virus.
 
+## Cookbook
 The [cookbook](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/examples/cookbook.html) provides a detailed description and example of all functions.
 
+# Docs
 The [full documentation](https://barinthusbio.github.io/epitope_aligner/epitope_aligner.html) includes function APIs under the submodules:
 - [map](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/map.html)
 - [stretch](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/stretch.html)
