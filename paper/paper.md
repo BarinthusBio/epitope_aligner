@@ -1,5 +1,5 @@
 ---
-title: 'epitope_aligner: placing epitopes in the context of sequence alignments'
+title: '`epitope_aligner`: placing epitopes in the context of sequence alignments'
 tags:
     - Python
     - epitopes
