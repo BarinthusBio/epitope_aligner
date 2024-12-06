@@ -425,7 +425,8 @@ class ParentSeqSerialiser(object):
 
             Function used to return the parent seq. The specific function is
             determined by the parent_seq_object at initialisation, as described
-            above. For specifics see the `_get_serialiser` method.
+            above. For specifics see the `_get_serialiser` method or call
+            `help()` on the get_parent_seq attribute.
     """
 
     def __init__(self, parent_seq_object: dict | str):
