@@ -52,9 +52,16 @@ def test_score_1_toupper():
         start_col="START",
         seq_col="SEQ"
     )
-    scores = [map._score_epitope_alignment(epi, sequence, toupper=True)[0] for epi in floating_peptides]
+    epitopes['floating_peptides'] = floating_peptides
+    score_matches = map.score_epitope_alignments(
+        table=epitopes,
+        parent_seq=sequence,
+        seq_col="floating_peptides"
+    )
+    scores = score_matches.score.tolist()
     true_scores = [1, 2/3, 2/3, 2/3, 1/3]
     assert scores == pytest.approx(true_scores)
+
 
 def test_score_1_noupper():
     sequence = "ABCDEFGHI"
@@ -72,7 +79,14 @@ def test_score_1_noupper():
         start_col="START",
         seq_col="SEQ"
     )
-    scores = [map._score_epitope_alignment(epi, sequence, toupper=False)[0] for epi in floating_peptides]
+    epitopes['floating_peptides'] = floating_peptides
+    score_matches = map.score_epitope_alignments(
+        table=epitopes,
+        parent_seq=sequence,
+        seq_col="floating_peptides",
+        toupper=False
+    )
+    scores = score_matches.score.tolist()
     true_scores = [0, 0, 0, 0, 0]
     assert scores == pytest.approx(true_scores)
 

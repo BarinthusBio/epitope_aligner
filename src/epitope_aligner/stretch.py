@@ -68,6 +68,7 @@ def add_empty_positions(
                 ~full_positions.isin(series.loc[levels].index)
             ]
         except KeyError:
+            # Unclear how this would be triggered
             missing_positions = full_positions.copy()
         for i in missing_positions:
             series.loc[levels + (i,)] = empty_value
