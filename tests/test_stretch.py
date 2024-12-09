@@ -68,6 +68,19 @@ def test_position_name_assertion(epitopes, sequence, index, ):
         )
 
 
+def test_3group_grid_fail(sequence, epitopes, index):
+    epitopes['allele'] = np.random.choice(["x","y","z"], epitopes.shape[0])
+    stretched_epitopes = stretch.stretch(epitopes)
+    allele_position_count = stretched_epitopes.groupby(["allele", "position", "length"]).size()
+    with pytest.raises(AssertionError):
+        grid = stretch.make_grid(
+            allele_position_count,
+            index=index,
+            parent_seq_length=len(sequence),
+            empty_value=0
+        )
+
+
 @pytest.fixture
 def grid(sequence, epitopes, index):
     epitopes['allele'] = np.random.choice(["x","y","z"], epitopes.shape[0])
@@ -81,12 +94,14 @@ def grid(sequence, epitopes, index):
     )
     return grid
 
+
 def test_grid_sum(epitopes, grid):
     epitope_sum = epitopes.groupby('allele').length.sum()
     epitope_sum.sort_index(inplace=True)
     grid_sum = grid.sum(axis=1)
     grid_sum.sort_index(inplace=True)
     assert all(epitope_sum == grid_sum)
+
 
 def test_grid_pos_sum(sequence, epitopes, index):
     epitopes['allele'] = np.random.choice(["x","y","z"], epitopes.shape[0])
@@ -105,8 +120,10 @@ def test_grid_pos_sum(sequence, epitopes, index):
     )
     assert all(grid.sum(axis=0) == pos_sums)
 
+
 def test_grid_width(sequence, grid):
     assert grid.shape[1] == len(sequence)
+
 
 @pytest.fixture
 def iedb_epitopes():
@@ -119,6 +136,7 @@ def iedb_epitopes():
     })
     iedb_epitopes['length'] = iedb_epitopes.seq.apply(len)
     return sequence,iedb_epitopes
+
 
 def test_iedb_epitope_grid(iedb_epitopes):
     sequence, iedb_epitopes = iedb_epitopes

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "epitope_aligner"
-version = "0.1.2"
+version = "0.1.3"
 license = { file = "LICENSE" }
 authors = [{ name = "David Wells", email = "david.wells@barinthusbio.com" }]
 description = "Easily map epitope coordinates between sequences in an alignment"
@@ -19,3 +19,8 @@ dependencies = [
   "scipy",
   "matplotlib"
 ]
+
+[project.urls]
+homepage = "https://github.com/BarinthusBio/epitope_aligner"
+documentation = "https://barinthusbio.github.io/epitope_aligner/epitope_aligner.html"
+issues = "https://github.com/BarinthusBio/epitope_aligner/issues"

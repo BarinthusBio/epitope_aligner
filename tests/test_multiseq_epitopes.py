@@ -208,6 +208,52 @@ def test_align_coordinate(epitopes, aligned_seq, index, includeend):
     assert all(epitopes.seq == epitopes.aligned_seq.str.replace("-",""))
 
 
+def test_align_last_coordinate(aligned_seq, sequence, index):
+    if isinstance(sequence, str):
+        sequence = {'seq0': sequence}
+    if isinstance(aligned_seq, str):
+        aligned_seq = {'seq0': aligned_seq}
+    last_coordinates = [len(seq)+index for seq in sequence.values()]
+    last_characters = [seq[-1] for seq in sequence.values()]
+    epi = pd.DataFrame({
+        "last_character": last_characters,
+        "end": last_coordinates,
+        'parent_seq': sequence.keys()
+    })
+    epi['new_end'] = map.align_coords(
+        table=epi,
+        aligned_parent_seq=aligned_seq,
+        coord_col="end",
+        index=index,
+        parent_col='parent_seq'
+    )
+    pss = map.ParentSeqSerialiser(parent_seq_object=aligned_seq)
+    epi['new_end_character'] = epi.apply(lambda x: pss.get_parent_seq(x.parent_seq)[x.new_end-1-index], axis=1)
+    assert all(epi.new_end_character == epi.last_character)
+
+
+def test_align_past_end_coordinate_fail(aligned_seq, sequence, index):
+    if isinstance(sequence, str):
+        sequence = {'seq0': sequence}
+    if isinstance(aligned_seq, str):
+        aligned_seq = {'seq0': aligned_seq}
+    last_coordinates = [2*len(seq)+index for seq in sequence.values()]
+    last_characters = [seq[-1] for seq in sequence.values()]
+    epi = pd.DataFrame({
+        "last_character": last_characters,
+        "end": last_coordinates,
+        'parent_seq': sequence.keys()
+    })
+    with pytest.raises(Exception):
+        epi['new_end'] = map.align_coords(
+            table=epi,
+            aligned_parent_seq=aligned_seq,
+            coord_col="end",
+            index=index,
+            parent_col='parent_seq'
+        )
+
+
 def test_unalign_coordinate(epitopes, aligned_seq, index, includeend, sequence):
     epitopes['newstart'] = map.align_coords(
         table=epitopes,
