@@ -8,6 +8,7 @@ tags:
 authors:
     - name: David A. Wells
       orcid: 0000-0002-4531-5968
+      affiliation: '1'
 affiliations:
     - name: Barinthus Biotherapeutics, UK
       index: 1
