@@ -153,6 +153,17 @@ The [full documentation](https://barinthusbio.github.io/epitope_aligner/epitope_
 - [stretch](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/stretch.html)
 - [utils](https://barinthusbio.github.io/epitope_aligner/epitope_aligner/utils.html)
 
+# Community guidelines
+Thanks for using `epitope_aligner`! The full guidelines are in `CONTRIBUTING.md`.
+
+If you have any suggestions or problems, the first port of call is the
+examples and documentation linked above. But if the answer is not
+there, please open an [issue](https://github.com/BarinthusBio/epitope_aligner/issues).
+Before submitting an issue, check the guidelines in `CONTRIBUTING.md`.
+
+If you are interesting in contributing to the software check `CONTRIBUTING.md`
+and the dev section below.
+
 # Dev
 Details on testing, creating docs, and virtual envinments.
 
