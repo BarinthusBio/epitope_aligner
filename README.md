@@ -17,6 +17,7 @@ If you have any suggestions or problems, please open an [issue](https://github.c
     - [Minimal](#minimal-examples)
     - [Quickstart](#quickstart)
     - [Cookbook](#cookbook)
+- [Community guidelines](#community-guidelines)
 - [Docs](#docs)
 - [Dev](#dev)
 
