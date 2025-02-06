@@ -10,7 +10,7 @@ authors:
       orcid: 0000-0002-4531-5968
       affiliation: '1'
 affiliations:
-    - name: Barinthus Biotherapeutics, UK
+    - name: Barinthus Biotherapeutics, United Kingdom
       index: 1
 date: 13 November 2024
 bibliography: paper.bib
